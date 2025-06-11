@@ -1,0 +1,7 @@
+.venv/
+.venv
+.terraform/
+.terraform
+.terraform.lock.hcl
+# Local .terraform directory
+.terraform.tfstate
