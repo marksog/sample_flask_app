@@ -1,0 +1,42 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+module "network" {
+    source = "./modules/network"
+    env = var.env
+}
+
+module "eks" {
+    source = "./modules/eks"
+    env = var.env
+    vpc_id = module.network.vpc_id
+    subnet_ids = concat(module.network.public, module.network.private_subnets)
+    key_name = var.key_name
+    private_subnets = module.network.private_subnets
+    public_subnets = module.network.public_subnets
+    cluster_name = var.cluster_name
+}
+
+module "bastion" {
+    source = "./modules/bastion"
+    env = var.env
+    vpc_id = module.network.vpc_id
+    public_subnets = module.network.public_subnets
+    key_name = var.key_name
+}
+
+module "jenkins" {
+    source          = "./modules/jenkins"
+  env             = var.env
+  vpc_id          = module.vpc.vpc_id
+  public_subnets  = module.vpc.public_subnets
+  key_name        = var.key_name
+  cluster_name    = module.eks.cluster_name
+  bastion_sg_id   = module.bastion.security_group_id
+}
+
