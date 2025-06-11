@@ -1,12 +1,15 @@
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0/16"
+  cidr_block = var.vpc_cidr
   enable_dns_support = true
   tags = {
     Name = "${var.env}-vpc"
   }
 }
 
-resource "asw_subnet" "public_subnets" {
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+resource "aws_subnet" "public_subnets" {
   count = 2
   vpc_id = aws_vpc.main.id
   cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
@@ -33,6 +36,13 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
   tags = {
     Name = "${var.env}-igw"
+  }
+}
+resource "aws_eip" "nat" {
+  count = length(aws_subnet.public_subnets)
+  associate_with_private_ip = null
+  tags = {
+    Name = "${var.env}-nat-eip-${count.index + 1}"
   }
 }
 
