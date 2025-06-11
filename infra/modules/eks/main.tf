@@ -12,10 +12,10 @@ module "eks" {
   eks_managed_node_groups = {}
 
 }
-  resource "aws_eks_node_group" "public" {
+  resource "aws_eks_node_group" "public_node_group" {
     cluster_name    = var.cluster_name
     node_group_name = "${var.env}-public-node-group"
-    node_role_arn   = aws_iam_role.nodes.role_arn
+    node_role_arn   = aws_iam_role.nodes.arn
     subnet_ids      = var.public_subnets
     scaling_config {
       desired_size = 2
@@ -50,10 +50,10 @@ module "eks" {
     depends_on = [module.eks]
   }
 
-    resource "aws_eks_node_group" "private" {
+    resource "aws_eks_node_group" "private_node_group" {
         cluster_name    = var.cluster_name
         node_group_name = "${var.env}-private-node-group"
-        node_role_arn   = aws_iam_role.nodes.role_arn
+        node_role_arn   = aws_iam_role.nodes.arn
         subnet_ids      = var.private_subnets
         scaling_config {
         desired_size = 1
@@ -81,3 +81,39 @@ module "eks" {
     
         depends_on = [module.eks]
     }
+
+resource "aws_iam_role" "nodes" {
+  name = "${var.env}-eks-node-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name = "${var.env}-eks-node-role"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_AmazonEKSWorkerNodePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.nodes.name
+}
+
+resource "aws_iam_role_policy_attachment" "nodes_AmazonEKS_CNI_Policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.nodes.name
+}

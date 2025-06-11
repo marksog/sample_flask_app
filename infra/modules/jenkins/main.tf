@@ -1,8 +1,18 @@
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
+  }
+}
+
 resource "aws_instance" "jenkins" {
   ami =  data.aws_ami.amazon_linux.id
   instance_type = "t3.micro"
-  subnet_id = var.public_subnet[0]
-  vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
+  subnet_id = var.public_subnets[0]
+  vpc_security_group_ids = [aws_security_group.jenkins.id]
   key_name = var.key_name
   iam_instance_profile = aws_iam_instance_profile.jenkins.name
 
