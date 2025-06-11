@@ -21,5 +21,5 @@ variable "key_name" {
 
 variable "public_subnets" {
   description = "The ID of the public subnet where the bastion host will be deployed"
-  type        = string
+  type        = list(string)
 }
