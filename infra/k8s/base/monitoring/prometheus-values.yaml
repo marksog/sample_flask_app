@@ -1,0 +1,49 @@
+# Prometheus Stack Helm values
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    scrapeInterval: 15s
+    retention: 7d
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2Gi
+      limits:
+        cpu: 1
+        memory: 4Gi
+    ruleSelectorNilUsesHelmValues: false
+
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: true
+  adminPassword: "admin"
+  service:
+    type: LoadBalancer
+  persistence:
+    enabled: true
+    size: 10Gi
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      kubernetes:
+        gnetId: 3119
+        revision: 1
+        datasource: Prometheus
+      flask-app:
+        gnetId: 14118
+        revision: 1
+        datasource: Prometheus
