@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: restrict-internal-traffic
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: internal
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          network: internal
+    ports:
+    - protocol: TCP
+      port: 5000

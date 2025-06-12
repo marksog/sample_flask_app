@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-app
+  namespace: dev
+  labels:
+    app: internal
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: internal
+  template:
+    metadata:
+      labels:
+        app: internal
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5001"
+        prometheus.io/path: "/metrics"
+    spec:
+      nodeSelector:
+        nodegroup-type: private
+      tolerations:
+      - key: "private"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      containers:
+      - name: flask
+        image: 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5001
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: secret-key
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 30
+          periodSeconds: 10
