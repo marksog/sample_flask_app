@@ -1,0 +1,150 @@
+pipeline {
+    agent any
+    environment {
+        AWS_REGION = 'us-east-1'
+        ECR_REGISTRY = '148761635167.dkr.ecr.us-east-1.amazonaws.com'
+        CLUSTER_NAME = "devsecops-cluster"
+        DOCKER_IMAGE = "${ECR_REGISTRY}/flask-test-app:${env.BUILD_ID}"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                url: 'https://github.com/marksog/sample_flask_app.git',
+                credentialsId: 'github-credentials'
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build(DOCKER_IMAGE, "--build-arg ENVIRONMENT=${env.BRANCH_NAME} ./app")
+                }
+            }
+        }
+        
+        stage('Push to ECR') {
+            steps {
+                script {
+                    docker.withRegistry("https://${ECR_REGISTRY}", 'ecr:us-east-1') {
+                        docker.image(DOCKER_IMAGE).push()
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy Infrastructure') {
+            steps {
+                dir('infra') {
+                    sh 'terraform init'
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+        
+        stage('Configure Kubernetes Access') {
+            steps {
+                script {
+                    sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
+                }
+            }
+        }
+        
+        stage('Deploy Application') {
+            steps {
+                script {
+                    // Apply base configurations
+                    sh "kubectl apply -f k8s/base/"
+                    
+                    // Install monitoring stack
+                    sh """
+                    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                    helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+                        -n monitoring \
+                        -f k8s/base/monitoring/prometheus-values.yaml
+                    """
+                    
+                    // Install ArgoCD
+                    sh """
+                    kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+                    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+                    """
+                    
+                    // Deploy environment-specific configs
+                    if (env.BRANCH_NAME == 'dev') {
+                        sh "kubectl apply -f k8s/dev/"
+                    } else if (env.BRANCH_NAME == 'main') {
+                        sh "kubectl apply -f k8s/prod/"
+                    }
+                }
+            }
+        }
+        
+        stage('Stress Testing') {
+            steps {
+                script {
+                    // Get endpoints
+                    def public_endpoint = sh(
+                        script: "kubectl get svc public-service -n ${env.BRANCH_NAME} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
+                        returnStdout: true
+                    ).trim()
+                    
+                    def bastion_ip = sh(
+                        script: "terraform output -state=infra/terraform.tfstate -raw bastion_public_ip",
+                        returnStdout: true
+                    ).trim()
+                    
+                    // Run public stress test
+                    sh """
+                    docker run --rm \
+                        -v ${WORKSPACE}/jenkins/scripts:/scripts \
+                        -e TARGET_URL=http://${public_endpoint} \
+                        loadimpact/k6 run /scripts/stress-test-public.js
+                    """
+                    
+                    // Run internal stress test via bastion
+                    sshagent(['bastion-ssh-key']) {
+                        sh """
+                        scp -o StrictHostKeyChecking=no \
+                            jenkins/scripts/stress-test-internal.sh \
+                            ec2-user@${bastion_ip}:/tmp/
+                            
+                        ssh -o StrictHostKeyChecking=no \
+                            ec2-user@${bastion_ip} \
+                            "chmod +x /tmp/stress-test-internal.sh && /tmp/stress-test-internal.sh"
+                        """
+                    }
+                }
+            }
+        }
+        
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    def public_url = sh(
+                        script: "kubectl get svc public-service -n ${env.BRANCH_NAME} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
+                        returnStdout: true
+                    ).trim()
+                    
+                    sh "curl -s http://${public_url}/health | jq ."
+                    
+                    // Verify pods are running
+                    sh "kubectl get pods -n ${env.BRANCH_NAME}"
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up workspace
+            cleanWs()
+        }
+        success {
+            slackSend color: 'good', message: "✅ Pipeline SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+        failure {
+            slackSend color: 'danger', message: "❌ Pipeline FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+    }
+}
