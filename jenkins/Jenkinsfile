@@ -12,6 +12,9 @@ pipeline {
                 git branch: 'main', 
                 url: 'https://github.com/marksog/sample_flask_app.git',
                 credentialsId: 'github-credentials'
+                script {
+                    env.BRANCH_NAME = 'main'
+                }
             }
         }
         
