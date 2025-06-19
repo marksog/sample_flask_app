@@ -27,3 +27,6 @@ terraform plan -target=module.network -target=module.jenkins -auto-approve
 terraform apply -target=module.network -target=module.jenkins -auto-approve
 
 ** after doing this user_data.sh did not install (well this is called from the pipeline.) so i manualy had to create the script in ec2 and run it. 
+
+## created a bootstrap deployment first
+this will trigger another diployment.

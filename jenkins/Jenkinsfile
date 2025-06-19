@@ -23,11 +23,28 @@ pipeline {
             }
         }
         
+        // stage('Push to ECR') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry("https://${ECR_REGISTRY}", 'ecr:us-east-1') {
+        //                 docker.image(DOCKER_IMAGE).push()
+        //             }
+        //         }
+        //     }
+        // }
         stage('Push to ECR') {
             steps {
                 script {
-                    docker.withRegistry("https://${ECR_REGISTRY}", 'ecr:us-east-1') {
-                        docker.image(DOCKER_IMAGE).push()
+            // Ensure ECR repository exists
+                    sh """
+                aws ecr describe-repositories --repository-names flask-test-app || \
+                aws ecr create-repository --repository-name flask-test-app
+            """
+            
+            // Login to ECR
+            withAWS(credentials: 'aws-keys', region: AWS_REGION) {
+                sh "aws ecr get-login-password | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
+                docker.image(DOCKER_IMAGE).push()
                     }
                 }
             }
