@@ -5,6 +5,12 @@ pipeline {
         ECR_REGISTRY = '148761635167.dkr.ecr.us-east-1.amazonaws.com'
         CLUSTER_NAME = "devsecops-cluster"
         DOCKER_IMAGE = "${ECR_REGISTRY}/flask-test-app:${env.BUILD_ID}"
+
+        // check if EKS cluster exists
+        EKS_EXISTS = sh(
+            script: 'aws eks describe-cluster --name devsecops-cluster --query "cluster.status" --output text 2>/dev/null | grep -q ACTIVE && echo true || echo false',
+            returnStdout: true
+        ).trim()
     }
     stages {
         stage('Checkout') {
@@ -21,7 +27,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build(DOCKER_IMAGE, "--build-arg ENVIRONMENT=${env.BRANCH_NAME} ./app")
+                    docker.build(DOCKER_IMAGE, "--build-arg ENVIRONMENT=${env.BRANCH_NAME} ./app") // this is deprecated using docker-buildx install plugins instead.
+                    //docker.build(DOCKER_IMAGE, "--platform linux/amd64 --build-arg ENVIRONMENT=${env.BRANCH_NAME} ./app")
                 }
             }
         }
@@ -45,7 +52,7 @@ pipeline {
             """
             
             // Login to ECR
-            withAWS(credentials: 'aws-keys', region: AWS_REGION) {
+            withAWS(credentials: 'AWS_ID', region: AWS_REGION) {
                 sh "aws ecr get-login-password | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
                 docker.image(DOCKER_IMAGE).push()
                     }
@@ -54,10 +61,17 @@ pipeline {
         }
         
         stage('Deploy Infrastructure') {
+            when {
+                expression { return EKS_EXISTS == 'false' }
+            }
             steps {
                 dir('infra') {
-                    sh 'terraform init'
-                    sh 'terraform apply -auto-approve'
+                    withAWS(region: AWS_REGION, credentials: 'AWS_ID') {
+                        sh 'terraform init'
+                        sh 'terraform apply -auto-approve'
+                    }
+                    // sh 'terraform init'
+                    // sh 'terraform apply -auto-approve'
                 }
             }
         }
@@ -161,10 +175,12 @@ pipeline {
             cleanWs()
         }
         success {
-            slackSend color: 'good', message: "✅ Pipeline SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+            // slackSend color: 'good', message: "✅ Pipeline SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+            echo "✅ Pipeline SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
         }
         failure {
-            slackSend color: 'danger', message: "❌ Pipeline FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+            //slackSend color: 'danger', message: "❌ Pipeline FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+            echo "❌ Pipeline FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
         }
     }
 }
