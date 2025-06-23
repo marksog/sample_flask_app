@@ -26,9 +26,19 @@ terraform init
 terraform plan -target=module.network -target=module.jenkins
 terraform apply -target=module.network -target=module.jenkins -auto-approve
 
+#### Things to do 
+---On Jenkins server---
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+--- also install terraform ---
+https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+
+
 Install plugins:
 Docker, AWS, Git, SSH Agent, Pipeline, AWS step, Terraform
 You will eqully have to install terraform on jenkins server manually
+
+
 
 ** after doing this user_data.sh did not install (well this is called from the pipeline.) so i manualy had to create the script in ec2 and run it. 
 
