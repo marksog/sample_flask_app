@@ -68,9 +68,7 @@ pipeline {
                 dir('infra') {
                     withAWS(region: AWS_REGION, credentials: 'AWS_ID') {
                         sh 'terraform init'
-                        sh '''terraform apply -auto-approve \
-                            -var="cluster_name=${CLUSTER_NAME}" \
-                        '''
+                        sh 'terraform apply -auto-approve'
                     }    
                     // sh 'terraform init'
                     // sh 'terraform apply -auto-approve'
