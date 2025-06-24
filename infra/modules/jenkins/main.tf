@@ -22,7 +22,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "jenkins" {
   ami =  data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
+  instance_type = "t3.large"
   subnet_id = var.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.jenkins.id]
   key_name = var.key_name
