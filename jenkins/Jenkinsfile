@@ -69,10 +69,10 @@ pipeline {
                     withAWS(region: AWS_REGION, credentials: 'AWS_ID') {
                         // Import existing resources to avoid duplicates, get real values from AWS
                         sh '''
+                        terraform init
                         terraform import module.jenkins.aws_security_group.jenkins sg-0ee98de3808617125 || true 
                         terraform import module.jenkins.aws_iam_role.jenkins dev-jenkins-role || true
                         terraform plan
-                        terraform init
                         terraform apply -auto-approve
                         '''
                     }    
