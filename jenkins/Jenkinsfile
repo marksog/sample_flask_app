@@ -71,6 +71,7 @@ pipeline {
                         sh '''
                         terraform import module.jenkins_first.aws_security_group.jenkins sg-0c86932834dd7a976 || true 
                         terraform import module.jenkins_first.aws_iam_role.jenkins dev-jenkins-role || true
+                        terraform plan
                         terraform init
                         terraform apply -auto-approve
                         '''
