@@ -38,7 +38,7 @@ Install plugins:
 Docker, AWS, Git, SSH Agent, Pipeline, AWS step, Terraform
 You will eqully have to install terraform on jenkins server manually
 
-
+update jenkins file to updated segurity group for jenkins. (to avoid duplication)
 
 ** after doing this user_data.sh did not install (well this is called from the pipeline.) so i manualy had to create the script in ec2 and run it. 
 
