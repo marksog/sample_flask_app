@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    environment {
+        AWS_REGION = 'us-east-1'
+    }
+    
+    stages {
+        stage('Confirm Destruction') {
+            steps {
+                script {
+                    timeout(time: 1, unit: 'MINUTES') {
+                        def confirm = input(
+                            message: "Destroy ALL infrastructure including EKS?", 
+                            parameters: [choice(choices: ['no', 'yes'], name: 'confirm')]
+                        )
+                        if (confirm != 'yes') error('Destruction cancelled')
+                    }
+                }
+            }
+        }
+        
+        stage('Destroy Infrastructure') {
+            steps {
+                dir('infra') {
+                    sh 'terraform init'
+                    sh 'terraform destroy -auto-approve'
+                }
+            }
+        }
+    }
+}
