@@ -75,6 +75,14 @@ pipeline {
                         terraform plan
                         terraform apply -auto-approve
                         '''
+                        script {
+                            def clusterName = sh(
+                                script: "terraform output -raw eks_cluster_name",
+                                returnStdout: true
+                            ).trim()
+                            env.CLUSTER_NAME = clusterName
+                            echo "EKS Cluster Name: ${env.CLUSTER_NAME}"
+                        }
                     }    
                     // sh 'terraform init'
                     // sh 'terraform apply -auto-approve'
@@ -85,6 +93,24 @@ pipeline {
         stage('Configure Kubernetes Access') {
             steps {
                 script {
+                    // wait for the cluster to become active
+                    def clusterStatus = ''
+                    timeout(time:10, uniit: 'MINUTES') {
+                        while (clusterStatus != 'ACTIVE') {
+                            clusterStatus = sh(
+                                script: "aws eks describe-cluster --name ${CLUSTER_NAME} --region ${AWS_REGION} --query 'cluster.status' --output text || echo 'NOT_FOUND'",
+                                returnStdout: true
+                            ).trim()
+                            if (clusterStatus == 'NOT_FOUND') {
+                                error "EKS cluster ${CLUSTER_NAME} not found. Please check the cluster name and region."
+                            }
+                            if (clusterStatus != 'ACTIVE') {
+                                echo "Cluster status: ${clusterStatus}. Waiting for it to become ACTIVE..."
+                                sleep(time: 30, unit: 'SECONDS')
+                            }
+                        }
+                    }
+                    // update kubecongfig.
                     sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
                 }
             }
