@@ -2,12 +2,14 @@
 for devops 3 tier application
 
 ## application (sample app)
+```
 app/
 ├── Dockerfile
 ├── requirements.txt
 ├── app.py
 ├── prometheus_monitoring.py
 └── wsgi.py
+```
 
 build the app and register to docker hub or amazon ecr
 
