@@ -12,8 +12,8 @@ app/
 build the app and register to docker hub or amazon ecr
 
 aws 
-`aws ecr get-login-password | docker login --username AWS --password-stdin 148761635167.dkr.ecr.us-east-1.amazonaws.com
-docker tag flask-test-app:latest 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:latest
+`aws ecr get-login-password | docker login --username AWS --password-stdin 148761635167.dkr.ecr.us-east-1.amazonaws.com`
+`docker tag flask-test-app:latest 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:latest`
 
 docker push 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app # create the repo manually with this name before you push`
 
@@ -21,15 +21,19 @@ docker push 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app # create
 i created a jenkins file to deploy just jenkins server "jenkins-only.tf"
 then i will use this server to deploy the whole architecture
 
-cd infra/
-terraform init
-terraform plan -target=module.network -target=module.jenkins
-terraform apply -target=module.network -target=module.jenkins -auto-approve
+1. Navigate to the directory:  
+   `cd infra/`  
+2. Initialize Terraform:  
+   `terraform init`  
+3. Plan changes:  
+   `terraform plan -target=module.network -target=module.jenkins`  
+4. Apply changes:  
+   `terraform apply -target=module.network -target=module.jenkins -auto-approve`
 
 #### Things to do 
 ---On Jenkins server---
-sudo usermod -aG docker jenkins
-sudo systemctl restart jenkins
+`sudo usermod -aG docker jenkins`
+`sudo systemctl restart jenkins`
 --- also install terraform ---
 https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
 
