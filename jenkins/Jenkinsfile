@@ -3,12 +3,12 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         ECR_REGISTRY = '148761635167.dkr.ecr.us-east-1.amazonaws.com'
-        CLUSTER_NAME = "devsecops-cluster"
+        CLUSTER_NAME = "dev-devsecops-cluster"
         DOCKER_IMAGE = "${ECR_REGISTRY}/flask-test-app:${env.BUILD_ID}"
 
         // check if EKS cluster exists
         EKS_EXISTS = sh(
-            script: 'aws eks describe-cluster --name devsecops-cluster --query "cluster.status" --output text 2>/dev/null | grep -q ACTIVE && echo true || echo false',
+            script: 'aws eks describe-cluster --name dev-devsecops-cluster --query "cluster.status" --output text 2>/dev/null | grep -q ACTIVE && echo true || echo false',
             returnStdout: true
         ).trim()
     }
@@ -70,7 +70,7 @@ pipeline {
                         // Import existing resources to avoid duplicates, get real values from AWS
                         sh '''
                         terraform init
-                        terraform import module.jenkins.aws_security_group.jenkins sg-0ee98de3808617125 || true 
+                        terraform import module.jenkins.aws_security_group.jenkins sg-08ba7d55adaad1f0e || true 
                         terraform import module.jenkins.aws_iam_role.jenkins dev-jenkins-role || true
                         terraform plan
                         terraform apply -auto-approve
@@ -110,8 +110,13 @@ pipeline {
                             }
                         }
                     }
-                    // update kubecongfig.
-                    sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
+                    // update kubecongfig with custom path
+                    sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION} --kubeconfig ${WORKSPACE}/kubeconfig"
+
+                    // use the custom kubeconfig for kubectl commands
+                    withEnv(["KUBECONFIG=${WORKSPACE}/kubeconfig"]) {
+                        sh "kubectl get nodes"
+                    }
                 }
             }
         }
