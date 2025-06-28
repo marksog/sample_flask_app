@@ -46,6 +46,7 @@ update jenkins file to updated segurity group for jenkins. (to avoid duplication
 this will trigger another diployment.
 
 deployment is like this 
+```mermaid
 graph TD
     A[Manual: Deploy Jenkins] --> B[Jenkins Runs Main Pipeline]
     B --> C{Does EKS Exist?}
@@ -55,3 +56,4 @@ graph TD
     E --> F
     F --> G[Run Tests]
     H[Manual Trigger] --> I[Destroy Pipeline]
+```
