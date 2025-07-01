@@ -40,5 +40,6 @@ module "jenkins" {
   key_name       = var.key_name
   cluster_name   = module.eks.cluster_name
   bastion_sg_id  = module.bastion.security_group_id
+  vpc_cidr      = var.vpc_cidr # Pass vpc_cidr to the Jenkins module
 }
 
