@@ -73,13 +73,6 @@ resource "aws_security_group" "jenkins" {
     cidr_blocks = [var.vpc_id] # Restrict to your VPC CIDR
   }
 
-  ingress {
-    description = "from my personal ip"
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = "108.80.14.92/32" # Replace with your IP
-  }
   egress {
     from_port   = 0
     to_port     = 0
