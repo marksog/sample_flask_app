@@ -20,6 +20,10 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+data "http" "my_ip" {
+  url = "http://checkip.amazonaws.com/"
+}
+
 resource "aws_instance" "jenkins" {
   ami =  data.aws_ami.ubuntu.id
   instance_type = "t3.large"
@@ -54,7 +58,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Restrict to your IP in production
+    cidr_blocks = ["0.0.0.0/0"] # Restrict to your IP in production (["${chomp(data.http.my_ip.body)}/32"])
   }
 
   ingress {
@@ -66,11 +70,19 @@ resource "aws_security_group" "jenkins" {
   }
 
   ingress {
+    description = "SSH from my IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["$chomp(data.http.my_ip.body)/32"] # Restriting to my IP
+  }
+
+  ingress {
     description = "Kubernetes API access"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_id] # Restrict to your VPC CIDR
+    cidr_blocks = [var.vpc_cidr] # Restrict to your VPC CIDR
   }
 
   egress {
