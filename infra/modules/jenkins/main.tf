@@ -65,6 +65,21 @@ resource "aws_security_group" "jenkins" {
     security_groups = [var.bastion_sg_id]
   }
 
+  ingress {
+    description = "Kubernetes API access"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_id] # Restrict to your VPC CIDR
+  }
+
+  ingress {
+    description = "from my personal ip"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = "108.80.14.92/32" # Replace with your IP
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -125,6 +140,14 @@ resource "aws_iam_role_policy" "jenkins_custom" {
         Action = [
           "eks:DescribeCluster",
           "eks:ListClusters",
+          "eks:AccessKubernetesApi",
+          "sts:AssumeRole"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
           "ec2:Describe*",
           "iam:ListRoles"
         ]

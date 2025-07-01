@@ -31,3 +31,14 @@ unzip -q awscliv2.zip && sudo ./aws/install && rm -rf aws awscliv2.zip
 mkdir -p /var/lib/jenkins/.kube
 aws eks update-kubeconfig --name ${cluster_name} --region ${region}
 chown -R jenkins:jenkins /var/lib/jenkins/.kube
+
+# Install dependencies
+sudo apt update && sudo apt install -y curl
+
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+# Verify kubectl installation
+kubectl version --client
