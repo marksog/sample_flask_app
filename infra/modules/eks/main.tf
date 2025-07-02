@@ -9,6 +9,8 @@ module "eks" {
 
   enable_irsa = true
 
+  cluster_security_group_id = aws_security_group.eks_cluser.id
+
   eks_managed_node_groups = {}
 
 }
@@ -120,4 +122,30 @@ resource "aws_iam_role_policy_attachment" "nodes_AmazonEC2ContainerRegistryReadO
 resource "aws_iam_role_policy_attachment" "nodes_AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.nodes.name
+}
+
+resource "aws_security_group" "eks_cluser" {
+  name = "${var.env}-eks-cluster-sg"
+  description = "Security group for EKS cluster"
+  vpc_id = var.vpc_id
+
+  # Allow inbound traffic from jenkins security group
+  ingress {
+    description = "allow traffic from Jenkins"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    security_groups = [aws_security_group.jenkins.id] # Reference Jenkins security group
+  }
+
+  # Allow outbound traffic to Jenkins security group
+  egress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "${var.env}-eks-cluster-sg"
+  }
 }
