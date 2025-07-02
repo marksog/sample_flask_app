@@ -69,13 +69,13 @@ resource "aws_security_group" "jenkins" {
     security_groups = [var.bastion_sg_id]
   }
 
-  ingress {
-    description = "SSH from my IP"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["$chomp(data.http.my_ip.body)/32"] # Restriting to my IP
-  }
+  # ingress {
+  #   description = "SSH from my IP"
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["$chomp(data.http.my_ip.body)/32"] # Restriting to my IP
+  # }
 
   ingress {
     description = "Kubernetes API access"
