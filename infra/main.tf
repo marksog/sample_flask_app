@@ -43,3 +43,11 @@ module "jenkins" {
   vpc_cidr      = var.vpc_cidr # Pass vpc_cidr to the Jenkins module
 }
 
+resource "aws_security_group_rule" "allow_jenkins_to_eks" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = module.eks.eks_cluster_security_group_id # EKS cluster security group
+  source_security_group_id = module.jenkins.security_group_id         # Jenkins security group
+}

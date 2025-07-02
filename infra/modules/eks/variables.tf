@@ -35,3 +35,8 @@ variable "subnet_ids" {
     description = "List of subnet IDs for the EKS cluster"
     type        = list(string)
 }
+
+# variable "jenkins_security_group_id" {
+#   description = "The security group ID for the Jenkins server"
+#   type        = string
+# }
