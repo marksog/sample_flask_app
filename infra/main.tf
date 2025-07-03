@@ -51,3 +51,12 @@ resource "aws_security_group_rule" "allow_jenkins_to_eks" {
   security_group_id        = module.eks.eks_cluster_security_group_id # EKS cluster security group
   source_security_group_id = module.jenkins.security_group_id         # Jenkins security group
 }
+
+resource "aws_security_group_rule" "jenkins_to_eks" {
+  type                     = "egress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = module.jenkins.security_group_id         # Jenkins security group
+  cidr_blocks = ["0.0.0.0/0"]  # EKS cluster security group
+}
