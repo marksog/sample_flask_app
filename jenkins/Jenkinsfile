@@ -70,7 +70,7 @@ pipeline {
                         // Import existing resources to avoid duplicates, get real values from AWS
                         sh '''
                         terraform init
-                        terraform import module.jenkins.aws_security_group.jenkins sg-01563c37fe1e38f8d || true 
+                        terraform import module.jenkins.aws_security_group.jenkins sg-0ca98d3a78344e067 || true 
                         terraform import module.jenkins.aws_iam_role.jenkins dev-jenkins-role || true
                         terraform plan
                         terraform apply -auto-approve
@@ -93,8 +93,6 @@ pipeline {
         stage('Configure Kubernetes Access') {
             steps {
                 script {
-                    // Ensure the workspace directory exists
-                    sh "mkdir -p ${WORKSPACE}/flask-app-deployment"
                     // wait for the cluster to become active
                     def clusterStatus = ''
                     timeout(time:10, uniit: 'MINUTES') {
@@ -113,10 +111,10 @@ pipeline {
                         }
                     }
                     // update kubecongfig with custom path
-                    sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION} --kubeconfig ${WORKSPACE}/kubeconfig"
+                    sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
 
                     // use the custom kubeconfig for kubectl commands
-                    withEnv(["KUBECONFIG=${WORKSPACE}/kubeconfig"]) {
+                    withEnv(["KUBECONFIG=/var/lib/jenkins/.kube/config"]) {
                         sh "kubectl get nodes"
                     }
                 }
