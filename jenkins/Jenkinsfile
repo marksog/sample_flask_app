@@ -110,6 +110,12 @@ pipeline {
                             }
                         }
                     }
+                    // Ensure the .kube directory exists and is owned by the jenkins user
+                    sh '''
+                        mkdir -p /var/lib/jenkins/.kube
+                        sudo chown -R jenkins:jenkins /var/lib/jenkins/.kube
+                        chmod 700 /var/lib/jenkins/.kube
+                    '''
                     // update kubecongfig with custom path
                     sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
 

@@ -63,5 +63,6 @@ trivy --version
 
 # Configure kubectl for Jenkins
 mkdir -p /var/lib/jenkins/.kube
-aws eks update-kubeconfig --name ${cluster_name} --region ${region}
 chown -R jenkins:jenkins /var/lib/jenkins/.kube
+chmod 700 /var/lib/jenkins/.kube
+aws eks update-kubeconfig --name ${cluster_name} --region ${region}
