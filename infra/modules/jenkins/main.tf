@@ -191,3 +191,35 @@ data "aws_ami" "amazon_linux_2" {
     values = ["amzn2-ami-hvm-*-x86_64-ebs"]
   }
 }
+
+resource "aws_lb" "jenkins_alb" {
+  name               = "jenkins-alb-${var.env}"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.jenkins.id]
+  subnets            = var.public_subnets
+}
+
+resource "aws_lb_listener" "jenkins_listener" {
+  load_balancer_arn = aws_lb.jenkins_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.jenkins_target_group.arn
+  }
+}
+
+resource "aws_lb_target_group" "jenkins_target_group" {
+  name        = "jenkins-tg-${var.env}"
+  port        = 8080
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "instance"
+}
+
+resource "aws_lb_target_group_attachment" "jenkins_attachment" {
+  target_group_arn = aws_lb_target_group.jenkins_target_group.arn
+  target_id        = aws_instance.jenkins.id
+  port             = 8080
+}

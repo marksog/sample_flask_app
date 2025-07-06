@@ -36,7 +36,7 @@ module "jenkins" {
   source         = "./modules/jenkins"
   env            = var.env
   vpc_id         = module.network.vpc_id
-  public_subnets = module.network.public_subnets
+  public_subnets = module.network.private_subnets # alliginging with indus standards
   key_name       = var.key_name
   cluster_name   = module.eks.cluster_name
   bastion_sg_id  = module.bastion.security_group_id
