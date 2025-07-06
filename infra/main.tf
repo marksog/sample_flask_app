@@ -36,11 +36,14 @@ module "jenkins" {
   source         = "./modules/jenkins"
   env            = var.env
   vpc_id         = module.network.vpc_id
-  public_subnets = module.network.private_subnets # alliginging with indus standards
+  private_subnets = module.network.private_subnets # using private subnets for Jenkins, alliginging with indus standards
+  public_subnets  = module.network.public_subnets # Pass public_subnets to the Jenkins module
   key_name       = var.key_name
   cluster_name   = module.eks.cluster_name
   bastion_sg_id  = module.bastion.security_group_id
   vpc_cidr      = var.vpc_cidr # Pass vpc_cidr to the Jenkins module
+  
+  depends_on = [ module.network.nat_gateway ]
 }
 
 resource "aws_security_group_rule" "allow_jenkins_to_eks" {

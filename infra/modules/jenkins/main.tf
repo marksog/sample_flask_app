@@ -27,7 +27,7 @@ data "http" "my_ip" {
 resource "aws_instance" "jenkins" {
   ami =  data.aws_ami.ubuntu.id
   instance_type = "t3.large"
-  subnet_id = var.public_subnets[0]
+  subnet_id = var.private_subnets[0]  # putting jenins server in private subnet
   vpc_security_group_ids = [aws_security_group.jenkins.id]
   key_name = var.key_name
   iam_instance_profile = aws_iam_instance_profile.jenkins.name
@@ -52,13 +52,15 @@ resource "aws_security_group" "jenkins" {
   name        = "${var.env}-jenkins-sg"
   description = "Security group for Jenkins controller"
   vpc_id      = var.vpc_id
-
+  
+  # allow HTTP traffice from ALB to Jenkins
   ingress {
-    description = "HTTP from VPC"
+    description = "HTTP from ALB"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Restrict to your IP in production (["${chomp(data.http.my_ip.body)}/32"])
+    cidr_blocks = ["0.0.0.0/0"] # Replace with ALB's subnet CIDR or trusted IP range
+    
   }
 
   ingress {
@@ -69,14 +71,6 @@ resource "aws_security_group" "jenkins" {
     security_groups = [var.bastion_sg_id]
   }
 
-  # ingress {
-  #   description = "SSH from my IP"
-  #   from_port   = 22
-  #   to_port     = 22
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["$chomp(data.http.my_ip.body)/32"] # Restriting to my IP
-  # }
-
   ingress {
     description = "Kubernetes API access"
     from_port   = 443
@@ -84,7 +78,8 @@ resource "aws_security_group" "jenkins" {
     protocol    = "tcp"
     cidr_blocks = [var.vpc_cidr] # Restrict to your VPC CIDR
   }
-
+  
+  # Allow all outbound traffic from Jenkins server
   egress {
     from_port   = 0
     to_port     = 0
@@ -96,6 +91,43 @@ resource "aws_security_group" "jenkins" {
     Name = "${var.env}-jenkins-sg"
   }
 }
+
+
+# secuity group for ALB
+resource "aws_security_group" "alb" {
+  name =  "${var.env}-alb-sg"
+  description = "Security group for ALB"
+  vpc_id = var.vpc_id
+
+  # allow traffic from ALB to Jenkins
+  ingress {
+    description = "Allow http traffic from the internet"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # open to the internet
+}
+
+  # allow traffice from ALB to Jenkins
+  ingress {
+    description = "Allow traffic from ALB to Jenkins"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Replace with Jenkins subnet CIDR or trusted IP range
+  }
+  # allow all outbound traffic from ALB
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "${var.env}-alb-sg"
+  }
+}
+
 
 resource "aws_iam_role" "jenkins" {
   name = "${var.env}-jenkins-role"
@@ -192,14 +224,20 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
+# Application Load Balancer (ALB)
 resource "aws_lb" "jenkins_alb" {
   name               = "jenkins-alb-${var.env}"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.jenkins.id]
   subnets            = var.public_subnets
+  tags = {
+    Name        = "jenkins-alb-${var.env}"
+    Environment = var.env
+  }
 }
 
+# ALB Listener
 resource "aws_lb_listener" "jenkins_listener" {
   load_balancer_arn = aws_lb.jenkins_alb.arn
   port              = 80
@@ -216,6 +254,13 @@ resource "aws_lb_target_group" "jenkins_target_group" {
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "instance"
+  health_check {
+    path                = "/login" # Jenkins login page 
+    interval            = 30       # Health check every 30 seconds
+    timeout             = 5        # Timeout for health check response
+    healthy_threshold  = 2         # Number of consecutive successful checks before marking as healthy
+    unhealthy_threshold = 2        # Number of consecutive failed checks before marking as unhealthy
+  }
 }
 
 resource "aws_lb_target_group_attachment" "jenkins_attachment" {

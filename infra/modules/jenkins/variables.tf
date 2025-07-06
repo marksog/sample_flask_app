@@ -18,6 +18,11 @@ variable "public_subnets" {
   type        = list(string)
 }
 
+variable "private_subnets" {
+  description = "List of public subnet IDs"
+  type        = list(string)
+}
+
 variable "key_name" {
   description = "SSH key pair name"
   type        = string
