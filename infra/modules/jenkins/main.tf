@@ -44,7 +44,7 @@ resource "aws_instance" "jenkins" {
 tags = {
     Name = "${var.env}-jenkins"
     Environment = var.env
-  }
+  } 
 }
 
 
@@ -95,34 +95,36 @@ resource "aws_security_group" "jenkins" {
 
 # secuity group for ALB
 resource "aws_security_group" "alb" {
-  name =  "${var.env}-alb-sg"
+  name        = "${var.env}-alb-sg"
   description = "Security group for ALB"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
-  # allow traffic from ALB to Jenkins
+  # Allow HTTP traffic from the internet to ALB
   ingress {
-    description = "Allow http traffic from the internet"
+    description = "Allow HTTP traffic from the internet"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # open to the internet
-}
+    cidr_blocks = ["0.0.0.0/0"] # Open to the internet
+  }
 
-  # allow traffice from ALB to Jenkins
+  # Allow traffic from ALB to Jenkins server
   ingress {
     description = "Allow traffic from ALB to Jenkins"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Replace with Jenkins subnet CIDR or trusted IP range
+    security_groups = [aws_security_group.jenkins.id] # Jenkins security group
   }
-  # allow all outbound traffic from ALB
+
+  # Allow all outbound traffic from ALB
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
   tags = {
     Name = "${var.env}-alb-sg"
   }
