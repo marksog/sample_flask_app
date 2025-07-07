@@ -61,3 +61,9 @@ variable "domain_name" {
   type        = string
   default     = "example.com"
 }
+
+
+variable "nat_gateway_id" {
+  description = "ID of the NAT Gateway"
+  type        = string
+}

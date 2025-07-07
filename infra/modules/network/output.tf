@@ -28,4 +28,3 @@ output "aws_nat_gateway_ids" {
   description = "The IDs of the NAT Gateways created for the Flask application."
   value       = aws_nat_gateway.nat[*].id
 }
-

@@ -45,6 +45,7 @@ tags = {
     Name = "${var.env}-jenkins"
     Environment = var.env
   } 
+  depends_on = [var.nat_gateway_id]
 }
 
 

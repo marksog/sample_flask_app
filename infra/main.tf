@@ -42,8 +42,7 @@ module "jenkins" {
   cluster_name   = module.eks.cluster_name
   bastion_sg_id  = module.bastion.security_group_id
   vpc_cidr      = var.vpc_cidr # Pass vpc_cidr to the Jenkins module
-  
-  depends_on = [ module.network.nat_gateway ]
+  nat_gateway_id = module.network.aws_nat_gateway_ids[0] # Pass NAT gateway ID to Jenkins module
 }
 
 resource "aws_security_group_rule" "allow_jenkins_to_eks" {
