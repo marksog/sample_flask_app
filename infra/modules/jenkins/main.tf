@@ -60,7 +60,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Replace with ALB's subnet CIDR or trusted IP range
+    cidr_blocks = [aws_security_group.alb.id] # Replace with ALB's subnet CIDR or trusted IP range
     
   }
 
@@ -232,7 +232,7 @@ resource "aws_lb" "jenkins_alb" {
   name               = "jenkins-alb-${var.env}"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.jenkins.id]
+  security_groups    = [aws_security_group.alb.id]
   subnets            = var.public_subnets
   tags = {
     Name        = "jenkins-alb-${var.env}"
