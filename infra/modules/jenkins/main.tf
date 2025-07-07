@@ -109,15 +109,6 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"] # Open to the internet
   }
 
-  # Allow traffic from ALB to Jenkins server
-  ingress {
-    description = "Allow traffic from ALB to Jenkins"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    security_groups = [aws_security_group.jenkins.id] # Jenkins security group
-  }
-
   # Allow all outbound traffic from ALB
   egress {
     from_port   = 0
