@@ -60,7 +60,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = [aws_security_group.alb.id] # Replace with ALB's subnet CIDR or trusted IP range
+    security_groups = [aws_security_group.alb.id] # Replace with ALB's subnet CIDR or trusted IP range
     
   }
 
