@@ -199,14 +199,14 @@ resource "aws_iam_role_policy" "jenkins_custom" {
   })
 }
 
-resource "aws_route53_record" "jenkins" {
-  count   = var.create_dns_record ? 1 : 0
-  zone_id = var.route53_zone_id
-  name    = "jenkins.${var.domain_name}"
-  type    = "A"
-  ttl     = 300
-  records = [aws_instance.jenkins.public_ip]
-}
+# resource "aws_route53_record" "jenkins" {
+#   count   = var.create_dns_record ? 1 : 0
+#   zone_id = var.route53_zone_id
+#   name    = "jenkins.${var.domain_name}"
+#   type    = "A"
+#   ttl     = 300
+#   records = [aws_instance.jenkins.public_ip]
+# }
 
 data "aws_ami" "amazon_linux_2" {
   most_recent = true

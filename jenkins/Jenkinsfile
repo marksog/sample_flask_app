@@ -70,7 +70,7 @@ pipeline {
                         // Import existing resources to avoid duplicates, get real values from AWS
                         sh '''
                         terraform init
-                        terraform import module.jenkins.aws_security_group.jenkins sg-0e260f29bc4164036 || true 
+                        terraform import module.jenkins.aws_security_group.jenkins sg-02d3f7485fa82090a || true 
                         terraform import module.jenkins.aws_iam_role.jenkins dev-jenkins-role || true
                         terraform plan
                         terraform apply -auto-approve
