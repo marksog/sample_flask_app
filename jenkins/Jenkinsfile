@@ -6,7 +6,7 @@ pipeline {
         CLUSTER_NAME = "dev-devsecops-cluster"
         DOCKER_IMAGE = "${ECR_REGISTRY}/flask-test-app:${env.BUILD_ID}"
 
-        // check if EKS cluster exists
+        // Check if EKS cluster exists
         EKS_EXISTS = sh(
             script: 'aws eks describe-cluster --name dev-devsecops-cluster --query "cluster.status" --output text 2>/dev/null | grep -q ACTIVE && echo true || echo false',
             returnStdout: true
@@ -27,34 +27,28 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build(DOCKER_IMAGE, "--build-arg ENVIRONMENT=${env.BRANCH_NAME} ./app") // this is deprecated using docker-buildx install plugins instead.
-                    //docker.build(DOCKER_IMAGE, "--platform linux/amd64 --build-arg ENVIRONMENT=${env.BRANCH_NAME} ./app")
+                    // Use docker buildx for multi-platform builds
+                    sh """
+                    docker buildx create --use
+                    docker buildx build --platform linux/amd64 --build-arg ENVIRONMENT=${env.BRANCH_NAME} -t ${DOCKER_IMAGE} ./app --load
+                    """
                 }
             }
         }
         
-        // stage('Push to ECR') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry("https://${ECR_REGISTRY}", 'ecr:us-east-1') {
-        //                 docker.image(DOCKER_IMAGE).push()
-        //             }
-        //         }
-        //     }
-        // }
         stage('Push to ECR') {
             steps {
                 script {
-            // Ensure ECR repository exists
+                    // Ensure ECR repository exists
                     sh """
-                aws ecr describe-repositories --repository-names flask-test-app || \
-                aws ecr create-repository --repository-name flask-test-app
-            """
-            
-            // Login to ECR
-            withAWS(credentials: 'AWS_ID', region: AWS_REGION) {
-                sh "aws ecr get-login-password | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
-                docker.image(DOCKER_IMAGE).push()
+                    aws ecr describe-repositories --repository-names flask-test-app || \
+                    aws ecr create-repository --repository-name flask-test-app
+                    """
+                    
+                    // Login to ECR
+                    withAWS(credentials: 'AWS_ID', region: AWS_REGION) {
+                        sh "aws ecr get-login-password | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
+                        sh "docker push ${DOCKER_IMAGE}"
                     }
                 }
             }
@@ -67,10 +61,9 @@ pipeline {
             steps {
                 dir('infra') {
                     withAWS(region: AWS_REGION, credentials: 'AWS_ID') {
-                        // Import existing resources to avoid duplicates, get real values from AWS
                         sh '''
                         terraform init
-                        terraform import module.jenkins.aws_security_group.jenkins sg-02d3f7485fa82090a || true 
+                        terraform import module.jenkins.aws_security_group.jenkins sg-07177b5f8b2a28339 || true 
                         terraform import module.jenkins.aws_iam_role.jenkins dev-jenkins-role || true
                         terraform plan
                         terraform apply -auto-approve
@@ -83,9 +76,7 @@ pipeline {
                             env.CLUSTER_NAME = clusterName
                             echo "EKS Cluster Name: ${env.CLUSTER_NAME}"
                         }
-                    }    
-                    // sh 'terraform init'
-                    // sh 'terraform apply -auto-approve'
+                    }
                 }
             }
         }
@@ -93,10 +84,8 @@ pipeline {
         stage('Configure Kubernetes Access') {
             steps {
                 script {
-                    sh "whoami"
-                    // wait for the cluster to become active
                     def clusterStatus = ''
-                    timeout(time:10, uniit: 'MINUTES') {
+                    timeout(time:10, unit: 'MINUTES') {
                         while (clusterStatus != 'ACTIVE') {
                             clusterStatus = sh(
                                 script: "aws eks describe-cluster --name ${CLUSTER_NAME} --region ${AWS_REGION} --query 'cluster.status' --output text || echo 'NOT_FOUND'",
@@ -111,20 +100,12 @@ pipeline {
                             }
                         }
                     }
-                    // Ensure the .kube directory exists and is owned by the jenkins user
                     sh '''
                         mkdir -p /var/lib/jenkins/.kube
                         chown -R jenkins:jenkins /var/lib/jenkins/.kube
                         chmod 700 /var/lib/jenkins/.kube
                     '''
-                    // chmod 700 /var/lib/jenkins/.kube
-                    // update kubecongfig with custom path
                     sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
-
-                    // use the custom kubeconfig for kubectl commands
-                    withEnv(["KUBECONFIG=/var/lib/jenkins/.kube/config"]) {
-                        sh "kubectl get nodes"
-                    }
                 }
             }
         }
@@ -132,28 +113,24 @@ pipeline {
         stage('Deploy Application') {
             steps {
                 script {
-                    // Apply base configurations
-                    sh "kubectl apply -f k8s/base/"
-                    
-                    // Install monitoring stack
-                    sh """
-                    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-                    helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
-                        -n monitoring \
-                        -f k8s/base/monitoring/prometheus-values.yaml
-                    """
-                    
-                    // Install ArgoCD
-                    sh """
-                    kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-                    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-                    """
-                    
-                    // Deploy environment-specific configs
-                    if (env.BRANCH_NAME == 'dev') {
-                        sh "kubectl apply -f k8s/dev/"
-                    } else if (env.BRANCH_NAME == 'main') {
-                        sh "kubectl apply -f k8s/prod/"
+                    dir('sample_flask_app/k8s') {
+                        sh "kubectl apply -f base/"
+                        sh "kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -"
+                        sh """
+                        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                        helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+                            -n monitoring \
+                            -f base/monitoring/prometheus-values.yaml
+                        """
+                        sh """
+                        kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+                        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+                        """
+                        if (env.BRANCH_NAME == 'dev') {
+                            sh "kubectl apply -f dev/"
+                        } else if (env.BRANCH_NAME == 'main') {
+                            sh "kubectl apply -f prod/"
+                        }
                     }
                 }
             }
@@ -162,7 +139,6 @@ pipeline {
         stage('Stress Testing') {
             steps {
                 script {
-                    // Get endpoints
                     def public_endpoint = sh(
                         script: "kubectl get svc public-service -n ${env.BRANCH_NAME} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
                         returnStdout: true
@@ -173,7 +149,6 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     
-                    // Run public stress test
                     sh """
                     docker run --rm \
                         -v ${WORKSPACE}/jenkins/scripts:/scripts \
@@ -181,7 +156,6 @@ pipeline {
                         loadimpact/k6 run /scripts/stress-test-public.js
                     """
                     
-                    // Run internal stress test via bastion
                     sshagent(['bastion-ssh-key']) {
                         sh """
                         scp -o StrictHostKeyChecking=no \
@@ -206,8 +180,6 @@ pipeline {
                     ).trim()
                     
                     sh "curl -s http://${public_url}/health | jq ."
-                    
-                    // Verify pods are running
                     sh "kubectl get pods -n ${env.BRANCH_NAME}"
                 }
             }
@@ -216,15 +188,12 @@ pipeline {
     
     post {
         always {
-            // Clean up workspace
             cleanWs()
         }
         success {
-            // slackSend color: 'good', message: "✅ Pipeline SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
             echo "✅ Pipeline SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
         }
         failure {
-            //slackSend color: 'danger', message: "❌ Pipeline FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
             echo "❌ Pipeline FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
         }
     }
