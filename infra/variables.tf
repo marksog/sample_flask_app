@@ -26,3 +26,15 @@ variable "vpc_cidr" {
   type        = string
   default     = "10.0.0.0/16" 
 }
+
+variable "cluster_endpoint_private_access" {
+  description = "Enable private access to the EKS cluster endpoint"
+  type        = bool
+  default     = false
+}
+
+variable "cluster_endpoint_public_access" {
+  description = "Enable public access to the Kubernetes API server endpoint"
+  type        = bool
+  default     = true
+}

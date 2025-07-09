@@ -13,14 +13,23 @@ module "network" {
 }
 
 module "eks" {
-    source         = "./modules/eks"
-    env            = var.env
-    vpc_id         = module.network.vpc_id
-    subnet_ids     = concat(module.network.public_subnets, module.network.private_subnets)
-    key_name       = var.key_name
-    private_subnets = module.network.private_subnets
-    public_subnets  = module.network.public_subnets
-    cluster_name   = var.cluster_name
+  source  = "./modules/eks"
+  env     = var.env
+
+  # Networking
+  vpc_id           = module.network.vpc_id
+  subnet_ids       = concat(module.network.public_subnets, module.network.private_subnets)
+  private_subnets  = module.network.private_subnets
+  public_subnets   = module.network.public_subnets
+
+  # Access
+  cluster_name                       = var.cluster_name
+  key_name                           = var.key_name
+
+  # Optional: add a list of CIDRs allowed to access public endpoint (if you set public access to true)
+  # cluster_endpoint_public_access_cidrs = ["YOUR_IP/32"]
+    cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 }
 
 module "bastion" {
@@ -61,5 +70,13 @@ resource "aws_security_group_rule" "jenkins_to_eks" {
   to_port                  = 443
   protocol                 = "tcp"
   security_group_id        = module.jenkins.security_group_id         # Jenkins security group
-  cidr_blocks = ["0.0.0.0/0"]  # EKS cluster security group
+  cidr_blocks = [var.vpc_cidr]  # EKS cluster security group
 }
+
+# resource "aws_vpc_endpoint" "eks" {
+#   vpc_id       = module.network.vpc_id
+#   service_name = "com.amazonaws.${var.aws_region}.eks"
+#   vpc_endpoint_type = "Interface"
+#   subnet_ids   = module.network.private_subnets
+#   security_group_ids = [module.network.default_sg_id]
+# }

@@ -40,3 +40,15 @@ variable "subnet_ids" {
 #   description = "The security group ID for the Jenkins server"
 #   type        = string
 # }
+
+variable "cluster_endpoint_private_access" {
+  description = "Enable private access to the Kubernetes API server endpoint"
+  type        = bool
+  default     = false
+}
+
+variable "cluster_endpoint_public_access" {
+  description = "Enable public access to the Kubernetes API server endpoint"
+  type        = bool
+  default     = true
+}
