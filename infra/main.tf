@@ -73,10 +73,20 @@ resource "aws_security_group_rule" "jenkins_to_eks" {
   cidr_blocks = [var.vpc_cidr]  # EKS cluster security group
 }
 
-# resource "aws_vpc_endpoint" "eks" {
-#   vpc_id       = module.network.vpc_id
-#   service_name = "com.amazonaws.${var.aws_region}.eks"
-#   vpc_endpoint_type = "Interface"
-#   subnet_ids   = module.network.private_subnets
-#   security_group_ids = [module.network.default_sg_id]
-# }
+resource "aws_vpc_endpoint" "eks" {
+  vpc_id       = module.network.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.eks"
+  vpc_endpoint_type = "Interface"
+  subnet_ids   = module.network.private_subnets
+  security_group_ids = [module.jenkins.security_group_id] # Security group for Jenkins server
+}
+
+# adding a rule to allow Jenkins to access EKS cluster
+resource "aws_security_group_rule" "allow_vpc_endpoint_jenkins" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = element(aws_vpc_endpoint.eks.security_group_ids, 0)
+  source_security_group_id = module.jenkins.security_group_id
+}
