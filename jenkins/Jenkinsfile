@@ -27,11 +27,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Use docker buildx for multi-platform builds
-                    sh """
-                    docker buildx create --use
-                    docker buildx build --platform linux/amd64 --build-arg ENVIRONMENT=${env.BRANCH_NAME} -t ${DOCKER_IMAGE} ./app --load
-                    """
+                    docker.build(DOCKER_IMAGE, "--build-arg ENVIRONMENT=${env.BRANCH_NAME} ./app")
                 }
             }
         }
