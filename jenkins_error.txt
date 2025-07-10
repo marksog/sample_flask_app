@@ -1,0 +1,225 @@
+Started by user marksog
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/flask-app-deployment
+[Pipeline] {
+[Pipeline] sh
++ aws eks describe-cluster --name dev-devsecops-cluster --query cluster.status --output text
++ grep -q ACTIVE
++ echo true
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] git
+The recommended git tool is: NONE
+using credential github-credentials
+Cloning the remote Git repository
+Cloning repository https://github.com/marksog/sample_flask_app.git
+ > git init /var/lib/jenkins/workspace/flask-app-deployment # timeout=10
+Fetching upstream changes from https://github.com/marksog/sample_flask_app.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+using GIT_ASKPASS to set credentials github-credentials
+ > git fetch --tags --force --progress -- https://github.com/marksog/sample_flask_app.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/marksog/sample_flask_app.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 3f1825c4ed88be3ede575c016bbdd36ba5c47062 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 3f1825c4ed88be3ede575c016bbdd36ba5c47062 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b main 3f1825c4ed88be3ede575c016bbdd36ba5c47062 # timeout=10
+Commit message: "removing docker buildx"
+ > git rev-list --no-walk 3f1825c4ed88be3ede575c016bbdd36ba5c47062 # timeout=10
+[Pipeline] script
+[Pipeline] {
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Docker Image)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker build -t 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:4 --build-arg ENVIRONMENT=main ./app
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  9.728kB
+
+Step 1/8 : FROM python:3.11-slim
+ ---> 0b14a859cdba
+Step 2/8 : ENV PYTHONDONTWRITEBYTECODE=1     PYTHONUNBUFFERED=1
+ ---> Using cache
+ ---> 982cd7b30da0
+Step 3/8 : WORKDIR /app
+ ---> Using cache
+ ---> bc4a6a31bd3a
+Step 4/8 : COPY requirements.txt .
+ ---> Using cache
+ ---> cd0851cebd68
+Step 5/8 : RUN pip install --no-cache-dir -r requirements.txt
+ ---> Using cache
+ ---> 5fb70a2d5e73
+Step 6/8 : COPY . .
+ ---> Using cache
+ ---> 0d8b197f110f
+Step 7/8 : EXPOSE 5001
+ ---> Using cache
+ ---> a545964c345b
+Step 8/8 : CMD ["gunicorn", "--bind", "0.0.0:5001", "wsgi:app", "--workers", "4"]
+ ---> Using cache
+ ---> 0bbf6750851c
+[Warning] One or more build-args [ENVIRONMENT] were not consumed
+Successfully built 0bbf6750851c
+Successfully tagged 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:4
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Push to ECR)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ aws ecr describe-repositories --repository-names flask-test-app
+{
+    "repositories": [
+        {
+            "repositoryArn": "arn:aws:ecr:us-east-1:148761635167:repository/flask-test-app",
+            "registryId": "148761635167",
+            "repositoryName": "flask-test-app",
+            "repositoryUri": "148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app",
+            "createdAt": "2025-06-10T17:10:46.631000+00:00",
+            "imageTagMutability": "MUTABLE",
+            "imageScanningConfiguration": {
+                "scanOnPush": false
+            },
+            "encryptionConfiguration": {
+                "encryptionType": "AES256"
+            }
+        }
+    ]
+}
+[Pipeline] withAWS
+Constructing AWS CredentialsSetting AWS region us-east-1 
+ [Pipeline] {
+[Pipeline] sh
++ aws ecr get-login-password
++ docker login --username AWS --password-stdin 148761635167.dkr.ecr.us-east-1.amazonaws.com
+WARNING! Your password will be stored unencrypted in /var/lib/jenkins/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+Login Succeeded
+[Pipeline] sh
++ docker push 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:4
+The push refers to repository [148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app]
+781edbd04b4b: Preparing
+b75602fde589: Preparing
+d8f9401365ad: Preparing
+cbec5cf454c8: Preparing
+546c6f4e2f2c: Preparing
+a1061f722fb2: Preparing
+e5b65e4c6bda: Preparing
+1bb35e8b4de1: Preparing
+a1061f722fb2: Waiting
+e5b65e4c6bda: Waiting
+1bb35e8b4de1: Waiting
+cbec5cf454c8: Layer already exists
+b75602fde589: Layer already exists
+d8f9401365ad: Layer already exists
+781edbd04b4b: Layer already exists
+546c6f4e2f2c: Layer already exists
+a1061f722fb2: Layer already exists
+e5b65e4c6bda: Layer already exists
+1bb35e8b4de1: Layer already exists
+4: digest: sha256:dab3add9fb8f66bd4600301091f05db1dcc6771adc7f800a66aa109f07e9e526 size: 1991
+[Pipeline] }
+[Pipeline] // withAWS
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy Infrastructure)
+Stage "Deploy Infrastructure" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Configure Kubernetes Access)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 10 min
+[Pipeline] {
+[Pipeline] sh
++ aws eks describe-cluster --name dev-devsecops-cluster --region us-east-1 --query cluster.status --output text
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] sh
++ mkdir -p /var/lib/jenkins/.kube
++ chown -R jenkins:jenkins /var/lib/jenkins/.kube
++ chmod 700 /var/lib/jenkins/.kube
+[Pipeline] sh
++ aws eks update-kubeconfig --name dev-devsecops-cluster --region us-east-1
+Updated context arn:aws:eks:us-east-1:148761635167:cluster/dev-devsecops-cluster in /var/lib/jenkins/.kube/config
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy Application)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] dir
+Running in /var/lib/jenkins/workspace/flask-app-deployment/infra/k8s/base
+[Pipeline] {
+[Pipeline] sh
++ kubectl apply -f namespace.yaml
+error: error validating "namespace.yaml": error validating data: failed to download openapi: Get "https://DFEDB5576F9FC62A7F7BEEF508ECA7C4.gr7.us-east-1.eks.amazonaws.com/openapi/v2?timeout=32s": dial tcp 10.1.1.126:443: i/o timeout; if you choose to ignore these errors, turn validation off with --validate=false
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Stress Testing)
+Stage "Stress Testing" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify Deployment)
+Stage "Verify Deployment" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] echo
+❌ Pipeline FAILED: flask-app-deployment #4
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE
