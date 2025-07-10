@@ -113,24 +113,31 @@ pipeline {
         stage('Deploy Application') {
             steps {
                 script {
-                    dir('sample_flask_app/k8s') {
-                        sh "kubectl apply -f base/"
-                        sh "kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -"
-                        sh """
-                        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-                        helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
-                            -n monitoring \
-                            -f base/monitoring/prometheus-values.yaml
-                        """
-                        sh """
-                        kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-                        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-                        """
-                        if (env.BRANCH_NAME == 'dev') {
-                            sh "kubectl apply -f dev/"
-                        } else if (env.BRANCH_NAME == 'main') {
-                            sh "kubectl apply -f prod/"
-                        }
+                    dir('infra/k8s/base') { // Navigate to the correct directory
+                        sh "kubectl apply -f namespace.yaml"
+                        sh "kubectl apply -f monitoring/prometheus-values.yaml"
+                        sh "kubectl apply -f argo/applicationset.yaml"
+                    }
+                    
+                    // Install Helm and deploy Prometheus
+                    sh "kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -"
+                    sh """
+                    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                    helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+                        -n monitoring \
+                        -f infra/k8s/base/monitoring/prometheus-values.yaml
+                    """
+                    
+                    // Install ArgoCD
+                    sh "kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -"
+                    sh """
+                    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+                    """
+                    
+                    // Deploy environment-specific applications
+                    dir("infra/k8s/${env.BRANCH_NAME}") {
+                        sh "kubectl apply -f internal-app/"
+                        sh "kubectl apply -f public-app/"
                     }
                 }
             }
