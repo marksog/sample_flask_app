@@ -87,6 +87,6 @@ resource "aws_security_group_rule" "allow_vpc_endpoint_jenkins" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  security_group_id        = tolist(aws_vpc_endpoint.eks.security_group_ids)[0]
+  security_group_id        = aws_vpc_endpoint.eks.security_group_ids[0] #tolist(aws_vpc_endpoint.eks.security_group_ids)[0]
   source_security_group_id = module.jenkins.security_group_id
 }
