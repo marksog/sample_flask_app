@@ -59,7 +59,7 @@ pipeline {
                     withAWS(region: AWS_REGION, credentials: 'AWS_ID') {
                         sh '''
                         terraform init
-                        terraform import module.jenkins.aws_security_group.jenkins sg-07177b5f8b2a28339 || true 
+                        terraform import module.jenkins.aws_security_group.jenkins sg-04c55fa0eb8519251 || true 
                         terraform import module.jenkins.aws_iam_role.jenkins dev-jenkins-role || true
                         terraform plan
                         terraform apply -auto-approve
