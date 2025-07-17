@@ -26,12 +26,12 @@ using GIT_ASKPASS to set credentials github-credentials
  > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
 Avoid second fetch
  > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
-Checking out Revision 033f6553f63145cc08599a55cfa7928f507de98a (refs/remotes/origin/main)
+Checking out Revision ca69302341905d7b6278f746ff0ee0feeecf4868 (refs/remotes/origin/main)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 033f6553f63145cc08599a55cfa7928f507de98a # timeout=10
+ > git checkout -f ca69302341905d7b6278f746ff0ee0feeecf4868 # timeout=10
  > git branch -a -v --no-abbrev # timeout=10
- > git checkout -b main 033f6553f63145cc08599a55cfa7928f507de98a # timeout=10
-Commit message: "endpoint fix"
+ > git checkout -b main ca69302341905d7b6278f746ff0ee0feeecf4868 # timeout=10
+Commit message: "attempt to fix k8s connectivity"
 First time build. Skipping changelog.
 [Pipeline] script
 [Pipeline] {
@@ -77,17 +77,17 @@ Digest: sha256:139020233cc412efe4c8135b0efe1c7569dc8b28ddd88bddb109b764f8977e30
 Status: Downloaded newer image for python:3.11-slim
  ---> 0b14a859cdba
 Step 2/8 : ENV PYTHONDONTWRITEBYTECODE=1     PYTHONUNBUFFERED=1
- ---> Running in c4a69b0f74ea
- ---> Removed intermediate container c4a69b0f74ea
- ---> 2f12b71eb6ff
+ ---> Running in 68cd51fc098c
+ ---> Removed intermediate container 68cd51fc098c
+ ---> 3b22afe5e1c3
 Step 3/8 : WORKDIR /app
- ---> Running in daaa66146908
- ---> Removed intermediate container daaa66146908
- ---> 9254bd3af000
+ ---> Running in 90a0fa2bfbaa
+ ---> Removed intermediate container 90a0fa2bfbaa
+ ---> 4a38b5b44238
 Step 4/8 : COPY requirements.txt .
- ---> 5ab87819f467
+ ---> 2e3fe4df2d18
 Step 5/8 : RUN pip install --no-cache-dir -r requirements.txt
- ---> Running in 8e99ea1c0c53
+ ---> Running in e669b9228f1c
 Collecting Flask==3.0.0 (from -r requirements.txt (line 1))
   Downloading flask-3.0.0-py3-none-any.whl.metadata (3.6 kB)
 Collecting prometheus-flask-exporter==0.22.4 (from -r requirements.txt (line 2))
@@ -111,22 +111,22 @@ Collecting packaging (from gunicorn==21.2.0->-r requirements.txt (line 3))
 Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->Flask==3.0.0->-r requirements.txt (line 1))
   Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
 Downloading flask-3.0.0-py3-none-any.whl (99 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.7/99.7 kB 18.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.7/99.7 kB 17.7 MB/s eta 0:00:00
 Downloading prometheus_flask_exporter-0.22.4-py3-none-any.whl (18 kB)
 Downloading gunicorn-21.2.0-py3-none-any.whl (80 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 238.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 282.4 MB/s eta 0:00:00
 Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
 Downloading click-8.2.1-py3-none-any.whl (102 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 102.2/102.2 kB 296.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 102.2/102.2 kB 274.7 MB/s eta 0:00:00
 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 242.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 101.9 MB/s eta 0:00:00
 Downloading werkzeug-3.1.3-py3-none-any.whl (224 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 224.5/224.5 kB 128.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 224.5/224.5 kB 137.0 MB/s eta 0:00:00
 Downloading packaging-25.0-py3-none-any.whl (66 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.5/66.5 kB 174.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.5/66.5 kB 219.4 MB/s eta 0:00:00
 Downloading prometheus_client-0.22.1-py3-none-any.whl (58 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.7/58.7 kB 152.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.7/58.7 kB 219.9 MB/s eta 0:00:00
 Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
 Installing collected packages: prometheus-client, packaging, MarkupSafe, itsdangerous, click, blinker, Werkzeug, Jinja2, gunicorn, Flask, prometheus-flask-exporter
 Successfully installed Flask-3.0.0 Jinja2-3.1.6 MarkupSafe-3.0.2 Werkzeug-3.1.3 blinker-1.9.0 click-8.2.1 gunicorn-21.2.0 itsdangerous-2.2.0 packaging-25.0 prometheus-client-0.22.1 prometheus-flask-exporter-0.22.4
@@ -134,20 +134,20 @@ Successfully installed Flask-3.0.0 Jinja2-3.1.6 MarkupSafe-3.0.2 Werkzeug-3.1.3 
 [0m[91m
 [notice] A new release of pip is available: 24.0 -> 25.1.1
 [notice] To update, run: pip install --upgrade pip
-[0m ---> Removed intermediate container 8e99ea1c0c53
- ---> cb7ebdc129cb
+[0m ---> Removed intermediate container e669b9228f1c
+ ---> ef38ea361c9d
 Step 6/8 : COPY . .
- ---> e8691cdf583f
+ ---> af09921faa76
 Step 7/8 : EXPOSE 5001
- ---> Running in eb231225ebf8
- ---> Removed intermediate container eb231225ebf8
- ---> c3d44e6fe8bb
+ ---> Running in e9bd74f27af0
+ ---> Removed intermediate container e9bd74f27af0
+ ---> 61f88c9e1096
 Step 8/8 : CMD ["gunicorn", "--bind", "0.0.0:5001", "wsgi:app", "--workers", "4"]
- ---> Running in 8fe23725b451
- ---> Removed intermediate container 8fe23725b451
- ---> 357fae4fa141
+ ---> Running in 26eda5b20809
+ ---> Removed intermediate container 26eda5b20809
+ ---> d9221938b8e2
 [Warning] One or more build-args [ENVIRONMENT] were not consumed
-Successfully built 357fae4fa141
+Successfully built d9221938b8e2
 Successfully tagged 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:1
 [Pipeline] }
 [Pipeline] // withEnv
@@ -193,10 +193,10 @@ Login Succeeded
 [Pipeline] sh
 + docker push 148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app:1
 The push refers to repository [148761635167.dkr.ecr.us-east-1.amazonaws.com/flask-test-app]
-3668417712e4: Preparing
-b502e595aca8: Preparing
-88e1056be6dd: Preparing
-fd86748565e9: Preparing
+8bbb69a7d76b: Preparing
+c2f3a775a5d1: Preparing
+b82f8fd35a95: Preparing
+fe034745c624: Preparing
 546c6f4e2f2c: Preparing
 a1061f722fb2: Preparing
 e5b65e4c6bda: Preparing
@@ -207,12 +207,12 @@ e5b65e4c6bda: Waiting
 546c6f4e2f2c: Layer already exists
 a1061f722fb2: Layer already exists
 e5b65e4c6bda: Layer already exists
-3668417712e4: Pushed
-fd86748565e9: Pushed
-88e1056be6dd: Pushed
-b502e595aca8: Pushed
+b82f8fd35a95: Pushed
+fe034745c624: Pushed
+8bbb69a7d76b: Pushed
+c2f3a775a5d1: Pushed
 1bb35e8b4de1: Pushed
-1: digest: sha256:d9b82f9f6591fd0a260a9be6efc9fd10cf87ff41b3e6a1a3f2b43617b275105f size: 1991
+1: digest: sha256:2a378eb0f629e88927798bceeda11ff922e27a8d96b07e4eb1f8cedd5183d0a2 size: 1991
 [Pipeline] }
 [Pipeline] // withAWS
 [Pipeline] }
@@ -248,22 +248,22 @@ Downloading registry.terraform.io/terraform-aws-modules/kms/aws 2.1.0 for eks.ek
 - jenkins in modules/jenkins
 - network in modules/network
 [0m[1mInitializing provider plugins...[0m
-- Finding hashicorp/time versions matching ">= 0.9.0"...
-- Finding hashicorp/cloudinit versions matching ">= 2.0.0"...
-- Finding hashicorp/null versions matching ">= 3.0.0"...
-- Finding hashicorp/aws versions matching ">= 4.33.0, ~> 5.0, >= 5.95.0, < 6.0.0"...
-- Finding latest version of hashicorp/http...
 - Finding hashicorp/tls versions matching ">= 3.0.0"...
-- Installing hashicorp/http v3.5.0...
-- Installed hashicorp/http v3.5.0 (signed by HashiCorp)
+- Finding hashicorp/time versions matching ">= 0.9.0"...
+- Finding hashicorp/null versions matching ">= 3.0.0"...
+- Finding hashicorp/cloudinit versions matching ">= 2.0.0"...
+- Finding latest version of hashicorp/http...
+- Finding hashicorp/aws versions matching ">= 4.33.0, ~> 5.0, >= 5.95.0, < 6.0.0"...
 - Installing hashicorp/tls v4.1.0...
 - Installed hashicorp/tls v4.1.0 (signed by HashiCorp)
 - Installing hashicorp/time v0.13.1...
 - Installed hashicorp/time v0.13.1 (signed by HashiCorp)
-- Installing hashicorp/cloudinit v2.3.7...
-- Installed hashicorp/cloudinit v2.3.7 (signed by HashiCorp)
 - Installing hashicorp/null v3.2.4...
 - Installed hashicorp/null v3.2.4 (signed by HashiCorp)
+- Installing hashicorp/cloudinit v2.3.7...
+- Installed hashicorp/cloudinit v2.3.7 (signed by HashiCorp)
+- Installing hashicorp/http v3.5.0...
+- Installed hashicorp/http v3.5.0 (signed by HashiCorp)
 - Installing hashicorp/aws v5.100.0...
 - Installed hashicorp/aws v5.100.0 (signed by HashiCorp)
 Terraform has created a lock file [1m.terraform.lock.hcl[0m to record the provider
@@ -280,33 +280,33 @@ should now work.
 If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.[0m
-+ terraform import module.jenkins.aws_security_group.jenkins sg-021371c9a04fd55fb
-[0m[1mmodule.network.data.aws_availability_zones.available: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
++ terraform import module.jenkins.aws_security_group.jenkins sg-0db5c9b4064798dcd
+[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
 [0m[1mmodule.bastion.data.aws_ami.amazon_linux: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.network.data.aws_availability_zones.available: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
-[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
+[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
 [0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Read complete after 0s [id=arn:aws:iam::148761635167:user/webadmin][0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Read complete after 0s [id=513122117][0m
 [0m[1mmodule.network.data.aws_availability_zones.available: Read complete after 0s [id=us-east-1][0m
 [0m[1mmodule.jenkins.data.aws_ami.ubuntu: Reading...[0m[0m
+[0m[1mmodule.jenkins.aws_security_group.jenkins: Importing from ID "sg-0db5c9b4064798dcd"...[0m
 [0m[1mmodule.jenkins.data.http.my_ip: Reading...[0m[0m
 [0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Reading...[0m[0m
-[0m[1mmodule.jenkins.aws_security_group.jenkins: Importing from ID "sg-021371c9a04fd55fb"...[0m
 [0m[1m[32mmodule.jenkins.aws_security_group.jenkins: Import prepared![0m
 [0m[32m  Prepared aws_security_group for import[0m
 [0m[1mmodule.jenkins.data.http.my_ip: Read complete after 0s [id=http://checkip.amazonaws.com/][0m
 [0m[1mmodule.jenkins.data.aws_ami.ubuntu: Read complete after 0s [id=ami-09ac0b140f63d3458][0m
-[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Read complete after 1s [id=ami-0871b7e0b83ae16c4][0m
+[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Read complete after 0s [id=ami-0871b7e0b83ae16c4][0m
 [0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Read complete after 0s [id=ami-01dd5f7dda5e8bb39][0m
 [31m[31m╷[0m[0m
 [31m│[0m [0m[1m[31mError: [0m[0m[1mResource already managed by Terraform[0m
@@ -318,33 +318,33 @@ commands will detect it and remind you to do so if necessary.[0m
 [0m[0m
 + true
 + terraform import module.jenkins.aws_iam_role.jenkins dev-jenkins-role
-[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
-[0m[1mmodule.network.data.aws_availability_zones.available: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
-[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.network.data.aws_availability_zones.available: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
+[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
+[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Read complete after 0s [id=arn:aws:iam::148761635167:user/webadmin][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Read complete after 0s [id=513122117][0m
-[0m[1mmodule.network.data.aws_availability_zones.available: Read complete after 1s [id=us-east-1][0m
+[0m[1mmodule.network.data.aws_availability_zones.available: Read complete after 0s [id=us-east-1][0m
 [0m[1mmodule.jenkins.aws_iam_role.jenkins: Importing from ID "dev-jenkins-role"...[0m
-[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Reading...[0m[0m
 [0m[1mmodule.jenkins.data.http.my_ip: Reading...[0m[0m
 [0m[1m[32mmodule.jenkins.aws_iam_role.jenkins: Import prepared![0m
 [0m[32m  Prepared aws_iam_role for import[0m
+[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Reading...[0m[0m
 [0m[1mmodule.jenkins.data.aws_ami.ubuntu: Reading...[0m[0m
 [0m[1mmodule.jenkins.data.http.my_ip: Read complete after 0s [id=http://checkip.amazonaws.com/][0m
 [0m[1mmodule.bastion.data.aws_ami.amazon_linux: Read complete after 1s [id=ami-0871b7e0b83ae16c4][0m
-[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Read complete after 0s [id=ami-01dd5f7dda5e8bb39][0m
 [0m[1mmodule.jenkins.data.aws_ami.ubuntu: Read complete after 0s [id=ami-09ac0b140f63d3458][0m
+[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Read complete after 0s [id=ami-01dd5f7dda5e8bb39][0m
 [31m[31m╷[0m[0m
 [31m│[0m [0m[1m[31mError: [0m[0m[1mResource already managed by Terraform[0m
 [31m│[0m [0m
@@ -355,65 +355,65 @@ commands will detect it and remind you to do so if necessary.[0m
 [0m[0m
 + true
 + terraform plan
-[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Reading...[0m[0m
 [0m[1mmodule.bastion.aws_iam_role.bastion: Refreshing state... [id=dev-bastion-role][0m
-[0m[1mmodule.network.aws_vpc.main: Refreshing state... [id=vpc-0a5b2ac6e14df6b6b][0m
 [0m[1mmodule.network.data.aws_availability_zones.available: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
-[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.network.aws_vpc.main: Refreshing state... [id=vpc-0475da6c0045face1][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
 [0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Read complete after 0s [id=arn:aws:iam::148761635167:user/webadmin][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Read complete after 0s [id=513122117][0m
 [0m[1mmodule.network.data.aws_availability_zones.available: Read complete after 0s [id=us-east-1][0m
+[0m[1mmodule.bastion.aws_iam_role_policy_attachment.bastion_eks: Refreshing state... [id=dev-bastion-role-20250717011205014900000003][0m
 [0m[1mmodule.bastion.aws_iam_instance_profile.bastion: Refreshing state... [id=dev-bastion-profile][0m
-[0m[1mmodule.bastion.aws_iam_role_policy_attachment.bastion_eks: Refreshing state... [id=dev-bastion-role-20250716175035769900000004][0m
-[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Read complete after 1s [id=ami-0871b7e0b83ae16c4][0m
-[0m[1mmodule.network.aws_internet_gateway.igw: Refreshing state... [id=igw-095608036ea9a8aa5][0m
-[0m[1mmodule.network.aws_subnet.private_subnets[1]: Refreshing state... [id=subnet-05200f4012af680b2][0m
-[0m[1mmodule.network.aws_subnet.public_subnets[0]: Refreshing state... [id=subnet-093b5acae0d3fbaea][0m
-[0m[1mmodule.network.aws_subnet.public_subnets[1]: Refreshing state... [id=subnet-062a9be1c94f41b40][0m
-[0m[1mmodule.network.aws_subnet.private_subnets[0]: Refreshing state... [id=subnet-0a59062530f4acae9][0m
-[0m[1mmodule.bastion.aws_security_group.bastion_sg: Refreshing state... [id=sg-0748d51c24d0cb13a][0m
-[0m[1mmodule.network.aws_route_table.public: Refreshing state... [id=rtb-063b0256630a1d7c9][0m
-[0m[1mmodule.network.aws_route_table_association.public[1]: Refreshing state... [id=rtbassoc-03016833289f26d2e][0m
-[0m[1mmodule.network.aws_eip.nat[1]: Refreshing state... [id=eipalloc-0e9c7f039f0ef3204][0m
-[0m[1mmodule.network.aws_route_table_association.public[0]: Refreshing state... [id=rtbassoc-0bca2d162838c4a8d][0m
-[0m[1mmodule.network.aws_eip.nat[0]: Refreshing state... [id=eipalloc-0dad5add305e68a02][0m
-[0m[1mmodule.bastion.aws_instance.bastion: Refreshing state... [id=i-0c6aedf693e5ee870][0m
-[0m[1mmodule.network.aws_nat_gateway.nat[1]: Refreshing state... [id=nat-0c9bdf999d4aa40d9][0m
-[0m[1mmodule.network.aws_nat_gateway.nat[0]: Refreshing state... [id=nat-00c00d004fa224549][0m
-[0m[1mmodule.network.aws_route_table.private[0]: Refreshing state... [id=rtb-051980ded6d47cefb][0m
-[0m[1mmodule.network.aws_route_table.private[1]: Refreshing state... [id=rtb-089d68e43ca589bec][0m
-[0m[1mmodule.network.aws_route_table_association.private[0]: Refreshing state... [id=rtbassoc-005650aa2a7ca5fe3][0m
-[0m[1mmodule.network.aws_route_table_association.private[1]: Refreshing state... [id=rtbassoc-0b28af48787fa15f7][0m
+[0m[1mmodule.bastion.data.aws_ami.amazon_linux: Read complete after 0s [id=ami-0871b7e0b83ae16c4][0m
+[0m[1mmodule.network.aws_subnet.public_subnets[1]: Refreshing state... [id=subnet-00d4239330c180d57][0m
+[0m[1mmodule.network.aws_subnet.public_subnets[0]: Refreshing state... [id=subnet-02daa126407b94eff][0m
+[0m[1mmodule.network.aws_subnet.private_subnets[1]: Refreshing state... [id=subnet-09d1c1b3093f18a0c][0m
+[0m[1mmodule.network.aws_internet_gateway.igw: Refreshing state... [id=igw-076740c2cc061231b][0m
+[0m[1mmodule.network.aws_subnet.private_subnets[0]: Refreshing state... [id=subnet-09b918113ef119930][0m
+[0m[1mmodule.bastion.aws_security_group.bastion_sg: Refreshing state... [id=sg-0251c8d0286d33ec4][0m
+[0m[1mmodule.network.aws_eip.nat[0]: Refreshing state... [id=eipalloc-0af79af1c685be877][0m
+[0m[1mmodule.network.aws_eip.nat[1]: Refreshing state... [id=eipalloc-02b7bc655aa95eb1c][0m
+[0m[1mmodule.network.aws_route_table.public: Refreshing state... [id=rtb-07f2f6288f79178bf][0m
+[0m[1mmodule.bastion.aws_instance.bastion: Refreshing state... [id=i-083d0c8b1e2e60881][0m
+[0m[1mmodule.network.aws_route_table_association.public[1]: Refreshing state... [id=rtbassoc-0e9f6245caeac42a5][0m
+[0m[1mmodule.network.aws_route_table_association.public[0]: Refreshing state... [id=rtbassoc-0bd0bb97d5cd5e131][0m
+[0m[1mmodule.network.aws_nat_gateway.nat[1]: Refreshing state... [id=nat-06be98881467a1591][0m
+[0m[1mmodule.network.aws_nat_gateway.nat[0]: Refreshing state... [id=nat-038d25eb0497612a8][0m
+[0m[1mmodule.network.aws_route_table.private[1]: Refreshing state... [id=rtb-00b3bbb6c21e0a13c][0m
+[0m[1mmodule.network.aws_route_table.private[0]: Refreshing state... [id=rtb-0b24feadaae1e5f74][0m
+[0m[1mmodule.network.aws_route_table_association.private[0]: Refreshing state... [id=rtbassoc-096dd1e10a6438cc9][0m
+[0m[1mmodule.network.aws_route_table_association.private[1]: Refreshing state... [id=rtbassoc-053ecf6d6efff0d42][0m
 [0m[1mmodule.jenkins.data.aws_ami.ubuntu: Reading...[0m[0m
 [0m[1mmodule.jenkins.data.http.my_ip: Reading...[0m[0m
-[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Reading...[0m[0m
-[0m[1mmodule.jenkins.aws_security_group.alb: Refreshing state... [id=sg-0cbe9f00a37f60345][0m
 [0m[1mmodule.jenkins.aws_iam_role.jenkins: Refreshing state... [id=dev-jenkins-role][0m
+[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Reading...[0m[0m
+[0m[1mmodule.jenkins.aws_security_group.alb: Refreshing state... [id=sg-00f39de268e6cbd65][0m
 [0m[1mmodule.jenkins.data.http.my_ip: Read complete after 0s [id=http://checkip.amazonaws.com/][0m
-[0m[1mmodule.jenkins.aws_lb_target_group.jenkins_target_group: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/4b3560a4af666c83][0m
-[0m[1mmodule.jenkins.aws_security_group.jenkins: Refreshing state... [id=sg-021371c9a04fd55fb][0m
-[0m[1mmodule.jenkins.aws_lb.jenkins_alb: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:loadbalancer/app/jenkins-alb-dev/82cf0972b1bc54d4][0m
-[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ssm: Refreshing state... [id=dev-jenkins-role-20250716175035619800000001][0m
+[0m[1mmodule.jenkins.aws_lb_target_group.jenkins_target_group: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/b5032410766d5241][0m
+[0m[1mmodule.jenkins.aws_lb.jenkins_alb: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:loadbalancer/app/jenkins-alb-dev/66d77f10228a4a7c][0m
+[0m[1mmodule.jenkins.aws_security_group.jenkins: Refreshing state... [id=sg-0db5c9b4064798dcd][0m
 [0m[1mmodule.jenkins.aws_iam_instance_profile.jenkins: Refreshing state... [id=dev-jenkins-profile][0m
-[0m[1mmodule.jenkins.data.aws_ami.ubuntu: Read complete after 0s [id=ami-09ac0b140f63d3458][0m
-[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ecr: Refreshing state... [id=dev-jenkins-role-20250716175035722100000003][0m
-[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_eks: Refreshing state... [id=dev-jenkins-role-20250716175035622300000002][0m
+[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ecr: Refreshing state... [id=dev-jenkins-role-20250717011205021000000004][0m
 [0m[1mmodule.jenkins.aws_iam_role_policy.jenkins_custom: Refreshing state... [id=dev-jenkins-role:dev-jenkins-custom-policy][0m
-[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Read complete after 0s [id=ami-01dd5f7dda5e8bb39][0m
-[0m[1mmodule.jenkins.aws_instance.jenkins: Refreshing state... [id=i-0b22b38b262a3849a][0m
-[0m[1mmodule.jenkins.aws_lb_listener.jenkins_listener: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:listener/app/jenkins-alb-dev/82cf0972b1bc54d4/9812b6cf4f52d0a6][0m
-[0m[1mmodule.jenkins.aws_lb_target_group_attachment.jenkins_attachment: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/4b3560a4af666c83-20250716175054479100000007][0m
+[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_eks: Refreshing state... [id=dev-jenkins-role-20250717011204941900000002][0m
+[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ssm: Refreshing state... [id=dev-jenkins-role-20250717011204920400000001][0m
+[0m[1mmodule.jenkins.data.aws_ami.ubuntu: Read complete after 0s [id=ami-09ac0b140f63d3458][0m
+[0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Read complete after 1s [id=ami-01dd5f7dda5e8bb39][0m
+[0m[1mmodule.jenkins.aws_lb_listener.jenkins_listener: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:listener/app/jenkins-alb-dev/66d77f10228a4a7c/3d71667ce5ff66ee][0m
+[0m[1mmodule.jenkins.aws_instance.jenkins: Refreshing state... [id=i-0a0789473e56e0182][0m
+[0m[1mmodule.jenkins.aws_lb_target_group_attachment.jenkins_attachment: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/b5032410766d5241-20250717011224912000000007][0m
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
@@ -430,7 +430,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m security_group_id        = (known after apply)
       [32m+[0m[0m security_group_rule_id   = (known after apply)
       [32m+[0m[0m self                     = false
-      [32m+[0m[0m source_security_group_id = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m source_security_group_id = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m to_port                  = 443
       [32m+[0m[0m type                     = "ingress"
     }
@@ -440,10 +440,10 @@ Terraform will perform the following actions:
       [32m+[0m[0m from_port                = 443
       [32m+[0m[0m id                       = (known after apply)
       [32m+[0m[0m protocol                 = "tcp"
-      [32m+[0m[0m security_group_id        = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m security_group_id        = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m security_group_rule_id   = (known after apply)
       [32m+[0m[0m self                     = false
-      [32m+[0m[0m source_security_group_id = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m source_security_group_id = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m to_port                  = 443
       [32m+[0m[0m type                     = "ingress"
     }
@@ -456,7 +456,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m from_port                = 443
       [32m+[0m[0m id                       = (known after apply)
       [32m+[0m[0m protocol                 = "tcp"
-      [32m+[0m[0m security_group_id        = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m security_group_id        = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m security_group_rule_id   = (known after apply)
       [32m+[0m[0m self                     = false
       [32m+[0m[0m source_security_group_id = (known after apply)
@@ -464,8 +464,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m type                     = "egress"
     }
 
-[1m  # aws_vpc_endpoint.eks[0m will be created
-[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "eks" {
+[1m  # aws_vpc_endpoint.ec2[0m will be created
+[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "ec2" {
       [32m+[0m[0m arn                   = (known after apply)
       [32m+[0m[0m cidr_blocks           = (known after apply)
       [32m+[0m[0m dns_entry             = (known after apply)
@@ -479,18 +479,84 @@ Terraform will perform the following actions:
       [32m+[0m[0m requester_managed     = (known after apply)
       [32m+[0m[0m route_table_ids       = (known after apply)
       [32m+[0m[0m security_group_ids    = [
-          [32m+[0m[0m "sg-021371c9a04fd55fb",
+          [32m+[0m[0m "sg-0db5c9b4064798dcd",
+        ]
+      [32m+[0m[0m service_name          = "com.amazonaws.us-east-1.ec2"
+      [32m+[0m[0m service_region        = (known after apply)
+      [32m+[0m[0m state                 = (known after apply)
+      [32m+[0m[0m subnet_ids            = [
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
+        ]
+      [32m+[0m[0m tags_all              = (known after apply)
+      [32m+[0m[0m vpc_endpoint_type     = "Interface"
+      [32m+[0m[0m vpc_id                = "vpc-0475da6c0045face1"
+
+      [32m+[0m[0m dns_options (known after apply)
+
+      [32m+[0m[0m subnet_configuration (known after apply)
+    }
+
+[1m  # aws_vpc_endpoint.eks[0m will be created
+[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "eks" {
+      [32m+[0m[0m arn                   = (known after apply)
+      [32m+[0m[0m cidr_blocks           = (known after apply)
+      [32m+[0m[0m dns_entry             = (known after apply)
+      [32m+[0m[0m id                    = (known after apply)
+      [32m+[0m[0m ip_address_type       = (known after apply)
+      [32m+[0m[0m network_interface_ids = (known after apply)
+      [32m+[0m[0m owner_id              = (known after apply)
+      [32m+[0m[0m policy                = (known after apply)
+      [32m+[0m[0m prefix_list_id        = (known after apply)
+      [32m+[0m[0m private_dns_enabled   = true
+      [32m+[0m[0m requester_managed     = (known after apply)
+      [32m+[0m[0m route_table_ids       = (known after apply)
+      [32m+[0m[0m security_group_ids    = [
+          [32m+[0m[0m "sg-0db5c9b4064798dcd",
         ]
       [32m+[0m[0m service_name          = "com.amazonaws.us-east-1.eks"
       [32m+[0m[0m service_region        = (known after apply)
       [32m+[0m[0m state                 = (known after apply)
       [32m+[0m[0m subnet_ids            = [
-          [32m+[0m[0m "subnet-05200f4012af680b2",
-          [32m+[0m[0m "subnet-0a59062530f4acae9",
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
         ]
       [32m+[0m[0m tags_all              = (known after apply)
       [32m+[0m[0m vpc_endpoint_type     = "Interface"
-      [32m+[0m[0m vpc_id                = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                = "vpc-0475da6c0045face1"
+
+      [32m+[0m[0m dns_options (known after apply)
+
+      [32m+[0m[0m subnet_configuration (known after apply)
+    }
+
+[1m  # aws_vpc_endpoint.sts[0m will be created
+[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "sts" {
+      [32m+[0m[0m arn                   = (known after apply)
+      [32m+[0m[0m cidr_blocks           = (known after apply)
+      [32m+[0m[0m dns_entry             = (known after apply)
+      [32m+[0m[0m id                    = (known after apply)
+      [32m+[0m[0m ip_address_type       = (known after apply)
+      [32m+[0m[0m network_interface_ids = (known after apply)
+      [32m+[0m[0m owner_id              = (known after apply)
+      [32m+[0m[0m policy                = (known after apply)
+      [32m+[0m[0m prefix_list_id        = (known after apply)
+      [32m+[0m[0m private_dns_enabled   = (known after apply)
+      [32m+[0m[0m requester_managed     = (known after apply)
+      [32m+[0m[0m route_table_ids       = (known after apply)
+      [32m+[0m[0m security_group_ids    = [
+          [32m+[0m[0m "sg-0db5c9b4064798dcd",
+        ]
+      [32m+[0m[0m service_name          = "com.amazonaws.us-east-1.sts"
+      [32m+[0m[0m service_region        = (known after apply)
+      [32m+[0m[0m state                 = (known after apply)
+      [32m+[0m[0m subnet_ids            = [
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
+        ]
+      [32m+[0m[0m tags_all              = (known after apply)
+      [32m+[0m[0m vpc_endpoint_type     = "Interface"
+      [32m+[0m[0m vpc_id                = "vpc-0475da6c0045face1"
 
       [32m+[0m[0m dns_options (known after apply)
 
@@ -519,8 +585,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m resources              = (known after apply)
       [32m+[0m[0m status                 = (known after apply)
       [32m+[0m[0m subnet_ids             = [
-          [32m+[0m[0m "subnet-05200f4012af680b2",
-          [32m+[0m[0m "subnet-0a59062530f4acae9",
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
         ]
       [32m+[0m[0m tags_all               = (known after apply)
       [32m+[0m[0m version                = (known after apply)
@@ -562,8 +628,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m resources              = (known after apply)
       [32m+[0m[0m status                 = (known after apply)
       [32m+[0m[0m subnet_ids             = [
-          [32m+[0m[0m "subnet-062a9be1c94f41b40",
-          [32m+[0m[0m "subnet-093b5acae0d3fbaea",
+          [32m+[0m[0m "subnet-00d4239330c180d57",
+          [32m+[0m[0m "subnet-02daa126407b94eff",
         ]
       [32m+[0m[0m tags_all               = (known after apply)
       [32m+[0m[0m version                = (known after apply)
@@ -691,7 +757,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m tags_all               = {
           [32m+[0m[0m "Name" = "dev-eks-cluster-sg"
         }
-      [32m+[0m[0m vpc_id                 = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                 = "vpc-0475da6c0045face1"
     }
 
 [1m  # module.eks.module.eks.data.tls_certificate.this[0][0m will be read during apply
@@ -782,10 +848,10 @@ Terraform will perform the following actions:
             ]
           [32m+[0m[0m security_group_ids        = (known after apply)
           [32m+[0m[0m subnet_ids                = [
-              [32m+[0m[0m "subnet-05200f4012af680b2",
-              [32m+[0m[0m "subnet-062a9be1c94f41b40",
-              [32m+[0m[0m "subnet-093b5acae0d3fbaea",
-              [32m+[0m[0m "subnet-0a59062530f4acae9",
+              [32m+[0m[0m "subnet-00d4239330c180d57",
+              [32m+[0m[0m "subnet-02daa126407b94eff",
+              [32m+[0m[0m "subnet-09b918113ef119930",
+              [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
             ]
           [32m+[0m[0m vpc_id                    = (known after apply)
         }
@@ -1008,7 +1074,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m tags_all               = {
           [32m+[0m[0m "Name" = "dev-devsecops-cluster-cluster"
         }
-      [32m+[0m[0m vpc_id                 = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                 = "vpc-0475da6c0045face1"
     }
 
 [1m  # module.eks.module.eks.aws_security_group.node[0][0m will be created
@@ -1030,7 +1096,7 @@ Terraform will perform the following actions:
           [32m+[0m[0m "Name"                                        = "dev-devsecops-cluster-node"
           [32m+[0m[0m "kubernetes.io/cluster/dev-devsecops-cluster" = "owned"
         }
-      [32m+[0m[0m vpc_id                 = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                 = "vpc-0475da6c0045face1"
     }
 
 [1m  # module.eks.module.eks.aws_security_group_rule.cluster["ingress_nodes_443"][0m will be created
@@ -1323,7 +1389,7 @@ Terraform will perform the following actions:
         }
     }
 
-[1mPlan:[0m 37 to add, 0 to change, 0 to destroy.
+[1mPlan:[0m 39 to add, 0 to change, 0 to destroy.
 [0m
 Changes to Outputs:
   [32m+[0m[0m eks_cluster_name = "devsecops-cluster"
@@ -1333,65 +1399,65 @@ Changes to Outputs:
 Note: You didn't use the -out option to save this plan, so Terraform can't
 guarantee to take exactly these actions if you run "terraform apply" now.
 + terraform apply -auto-approve
-[0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
-[0m[1mmodule.network.aws_vpc.main: Refreshing state... [id=vpc-0a5b2ac6e14df6b6b][0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
-[0m[1mmodule.network.data.aws_availability_zones.available: Reading...[0m[0m
-[0m[1mmodule.bastion.aws_iam_role.bastion: Refreshing state... [id=dev-bastion-role][0m
+[0m[1mmodule.network.aws_vpc.main: Refreshing state... [id=vpc-0475da6c0045face1][0m
 [0m[1mmodule.bastion.data.aws_ami.amazon_linux: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
+[0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.bastion.aws_iam_role.bastion: Refreshing state... [id=dev-bastion-role][0m
+[0m[1mmodule.network.data.aws_availability_zones.available: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
+[0m[1mmodule.eks.module.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
 [0m[1mmodule.eks.module.eks.data.aws_caller_identity.current[0]: Read complete after 0s [id=148761635167][0m
-[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_session_context.current[0]: Read complete after 0s [id=arn:aws:iam::148761635167:user/webadmin][0m
+[0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.data.aws_iam_policy_document.custom[0]: Read complete after 0s [id=513122117][0m
 [0m[1mmodule.network.data.aws_availability_zones.available: Read complete after 0s [id=us-east-1][0m
-[0m[1mmodule.bastion.aws_iam_role_policy_attachment.bastion_eks: Refreshing state... [id=dev-bastion-role-20250716175035769900000004][0m
+[0m[1mmodule.bastion.aws_iam_role_policy_attachment.bastion_eks: Refreshing state... [id=dev-bastion-role-20250717011205014900000003][0m
 [0m[1mmodule.bastion.aws_iam_instance_profile.bastion: Refreshing state... [id=dev-bastion-profile][0m
 [0m[1mmodule.bastion.data.aws_ami.amazon_linux: Read complete after 0s [id=ami-0871b7e0b83ae16c4][0m
-[0m[1mmodule.bastion.aws_security_group.bastion_sg: Refreshing state... [id=sg-0748d51c24d0cb13a][0m
-[0m[1mmodule.network.aws_subnet.public_subnets[1]: Refreshing state... [id=subnet-062a9be1c94f41b40][0m
-[0m[1mmodule.network.aws_subnet.private_subnets[1]: Refreshing state... [id=subnet-05200f4012af680b2][0m
-[0m[1mmodule.network.aws_subnet.private_subnets[0]: Refreshing state... [id=subnet-0a59062530f4acae9][0m
-[0m[1mmodule.network.aws_internet_gateway.igw: Refreshing state... [id=igw-095608036ea9a8aa5][0m
-[0m[1mmodule.network.aws_subnet.public_subnets[0]: Refreshing state... [id=subnet-093b5acae0d3fbaea][0m
-[0m[1mmodule.network.aws_route_table.public: Refreshing state... [id=rtb-063b0256630a1d7c9][0m
-[0m[1mmodule.network.aws_eip.nat[0]: Refreshing state... [id=eipalloc-0dad5add305e68a02][0m
-[0m[1mmodule.network.aws_eip.nat[1]: Refreshing state... [id=eipalloc-0e9c7f039f0ef3204][0m
-[0m[1mmodule.network.aws_route_table_association.public[1]: Refreshing state... [id=rtbassoc-03016833289f26d2e][0m
-[0m[1mmodule.bastion.aws_instance.bastion: Refreshing state... [id=i-0c6aedf693e5ee870][0m
-[0m[1mmodule.network.aws_route_table_association.public[0]: Refreshing state... [id=rtbassoc-0bca2d162838c4a8d][0m
-[0m[1mmodule.network.aws_nat_gateway.nat[1]: Refreshing state... [id=nat-0c9bdf999d4aa40d9][0m
-[0m[1mmodule.network.aws_nat_gateway.nat[0]: Refreshing state... [id=nat-00c00d004fa224549][0m
-[0m[1mmodule.network.aws_route_table.private[0]: Refreshing state... [id=rtb-051980ded6d47cefb][0m
-[0m[1mmodule.network.aws_route_table.private[1]: Refreshing state... [id=rtb-089d68e43ca589bec][0m
-[0m[1mmodule.network.aws_route_table_association.private[1]: Refreshing state... [id=rtbassoc-0b28af48787fa15f7][0m
-[0m[1mmodule.network.aws_route_table_association.private[0]: Refreshing state... [id=rtbassoc-005650aa2a7ca5fe3][0m
-[0m[1mmodule.jenkins.aws_security_group.alb: Refreshing state... [id=sg-0cbe9f00a37f60345][0m
-[0m[1mmodule.jenkins.aws_iam_role.jenkins: Refreshing state... [id=dev-jenkins-role][0m
+[0m[1mmodule.network.aws_subnet.private_subnets[1]: Refreshing state... [id=subnet-09d1c1b3093f18a0c][0m
+[0m[1mmodule.network.aws_internet_gateway.igw: Refreshing state... [id=igw-076740c2cc061231b][0m
+[0m[1mmodule.network.aws_subnet.private_subnets[0]: Refreshing state... [id=subnet-09b918113ef119930][0m
+[0m[1mmodule.bastion.aws_security_group.bastion_sg: Refreshing state... [id=sg-0251c8d0286d33ec4][0m
+[0m[1mmodule.network.aws_subnet.public_subnets[0]: Refreshing state... [id=subnet-02daa126407b94eff][0m
+[0m[1mmodule.network.aws_subnet.public_subnets[1]: Refreshing state... [id=subnet-00d4239330c180d57][0m
+[0m[1mmodule.network.aws_route_table.public: Refreshing state... [id=rtb-07f2f6288f79178bf][0m
+[0m[1mmodule.bastion.aws_instance.bastion: Refreshing state... [id=i-083d0c8b1e2e60881][0m
+[0m[1mmodule.network.aws_eip.nat[1]: Refreshing state... [id=eipalloc-02b7bc655aa95eb1c][0m
+[0m[1mmodule.network.aws_eip.nat[0]: Refreshing state... [id=eipalloc-0af79af1c685be877][0m
+[0m[1mmodule.network.aws_route_table_association.public[1]: Refreshing state... [id=rtbassoc-0e9f6245caeac42a5][0m
+[0m[1mmodule.network.aws_route_table_association.public[0]: Refreshing state... [id=rtbassoc-0bd0bb97d5cd5e131][0m
+[0m[1mmodule.network.aws_nat_gateway.nat[0]: Refreshing state... [id=nat-038d25eb0497612a8][0m
+[0m[1mmodule.network.aws_nat_gateway.nat[1]: Refreshing state... [id=nat-06be98881467a1591][0m
+[0m[1mmodule.network.aws_route_table.private[0]: Refreshing state... [id=rtb-0b24feadaae1e5f74][0m
+[0m[1mmodule.network.aws_route_table.private[1]: Refreshing state... [id=rtb-00b3bbb6c21e0a13c][0m
+[0m[1mmodule.network.aws_route_table_association.private[0]: Refreshing state... [id=rtbassoc-096dd1e10a6438cc9][0m
+[0m[1mmodule.network.aws_route_table_association.private[1]: Refreshing state... [id=rtbassoc-053ecf6d6efff0d42][0m
 [0m[1mmodule.jenkins.data.http.my_ip: Reading...[0m[0m
 [0m[1mmodule.jenkins.data.aws_ami.ubuntu: Reading...[0m[0m
+[0m[1mmodule.jenkins.aws_security_group.alb: Refreshing state... [id=sg-00f39de268e6cbd65][0m
 [0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Reading...[0m[0m
-[0m[1mmodule.jenkins.aws_lb_target_group.jenkins_target_group: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/4b3560a4af666c83][0m
+[0m[1mmodule.jenkins.aws_iam_role.jenkins: Refreshing state... [id=dev-jenkins-role][0m
+[0m[1mmodule.jenkins.aws_lb_target_group.jenkins_target_group: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/b5032410766d5241][0m
 [0m[1mmodule.jenkins.data.http.my_ip: Read complete after 0s [id=http://checkip.amazonaws.com/][0m
-[0m[1mmodule.jenkins.aws_security_group.jenkins: Refreshing state... [id=sg-021371c9a04fd55fb][0m
-[0m[1mmodule.jenkins.aws_lb.jenkins_alb: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:loadbalancer/app/jenkins-alb-dev/82cf0972b1bc54d4][0m
-[0m[1mmodule.jenkins.aws_iam_role_policy.jenkins_custom: Refreshing state... [id=dev-jenkins-role:dev-jenkins-custom-policy][0m
-[0m[1mmodule.jenkins.aws_iam_instance_profile.jenkins: Refreshing state... [id=dev-jenkins-profile][0m
-[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ssm: Refreshing state... [id=dev-jenkins-role-20250716175035619800000001][0m
-[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ecr: Refreshing state... [id=dev-jenkins-role-20250716175035722100000003][0m
-[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_eks: Refreshing state... [id=dev-jenkins-role-20250716175035622300000002][0m
+[0m[1mmodule.jenkins.aws_lb.jenkins_alb: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:loadbalancer/app/jenkins-alb-dev/66d77f10228a4a7c][0m
+[0m[1mmodule.jenkins.aws_security_group.jenkins: Refreshing state... [id=sg-0db5c9b4064798dcd][0m
 [0m[1mmodule.jenkins.data.aws_ami.ubuntu: Read complete after 0s [id=ami-09ac0b140f63d3458][0m
-[0m[1mmodule.jenkins.aws_instance.jenkins: Refreshing state... [id=i-0b22b38b262a3849a][0m
+[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_eks: Refreshing state... [id=dev-jenkins-role-20250717011204941900000002][0m
+[0m[1mmodule.jenkins.aws_iam_instance_profile.jenkins: Refreshing state... [id=dev-jenkins-profile][0m
+[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ssm: Refreshing state... [id=dev-jenkins-role-20250717011204920400000001][0m
+[0m[1mmodule.jenkins.aws_iam_role_policy_attachment.jenkins_ecr: Refreshing state... [id=dev-jenkins-role-20250717011205021000000004][0m
+[0m[1mmodule.jenkins.aws_iam_role_policy.jenkins_custom: Refreshing state... [id=dev-jenkins-role:dev-jenkins-custom-policy][0m
 [0m[1mmodule.jenkins.data.aws_ami.amazon_linux_2: Read complete after 0s [id=ami-01dd5f7dda5e8bb39][0m
-[0m[1mmodule.jenkins.aws_lb_listener.jenkins_listener: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:listener/app/jenkins-alb-dev/82cf0972b1bc54d4/9812b6cf4f52d0a6][0m
-[0m[1mmodule.jenkins.aws_lb_target_group_attachment.jenkins_attachment: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/4b3560a4af666c83-20250716175054479100000007][0m
+[0m[1mmodule.jenkins.aws_lb_listener.jenkins_listener: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:listener/app/jenkins-alb-dev/66d77f10228a4a7c/3d71667ce5ff66ee][0m
+[0m[1mmodule.jenkins.aws_instance.jenkins: Refreshing state... [id=i-0a0789473e56e0182][0m
+[0m[1mmodule.jenkins.aws_lb_target_group_attachment.jenkins_attachment: Refreshing state... [id=arn:aws:elasticloadbalancing:us-east-1:148761635167:targetgroup/jenkins-tg-dev/b5032410766d5241-20250717011224912000000007][0m
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
@@ -1408,7 +1474,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m security_group_id        = (known after apply)
       [32m+[0m[0m security_group_rule_id   = (known after apply)
       [32m+[0m[0m self                     = false
-      [32m+[0m[0m source_security_group_id = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m source_security_group_id = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m to_port                  = 443
       [32m+[0m[0m type                     = "ingress"
     }
@@ -1418,10 +1484,10 @@ Terraform will perform the following actions:
       [32m+[0m[0m from_port                = 443
       [32m+[0m[0m id                       = (known after apply)
       [32m+[0m[0m protocol                 = "tcp"
-      [32m+[0m[0m security_group_id        = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m security_group_id        = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m security_group_rule_id   = (known after apply)
       [32m+[0m[0m self                     = false
-      [32m+[0m[0m source_security_group_id = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m source_security_group_id = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m to_port                  = 443
       [32m+[0m[0m type                     = "ingress"
     }
@@ -1434,7 +1500,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m from_port                = 443
       [32m+[0m[0m id                       = (known after apply)
       [32m+[0m[0m protocol                 = "tcp"
-      [32m+[0m[0m security_group_id        = "sg-021371c9a04fd55fb"
+      [32m+[0m[0m security_group_id        = "sg-0db5c9b4064798dcd"
       [32m+[0m[0m security_group_rule_id   = (known after apply)
       [32m+[0m[0m self                     = false
       [32m+[0m[0m source_security_group_id = (known after apply)
@@ -1442,8 +1508,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m type                     = "egress"
     }
 
-[1m  # aws_vpc_endpoint.eks[0m will be created
-[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "eks" {
+[1m  # aws_vpc_endpoint.ec2[0m will be created
+[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "ec2" {
       [32m+[0m[0m arn                   = (known after apply)
       [32m+[0m[0m cidr_blocks           = (known after apply)
       [32m+[0m[0m dns_entry             = (known after apply)
@@ -1457,18 +1523,84 @@ Terraform will perform the following actions:
       [32m+[0m[0m requester_managed     = (known after apply)
       [32m+[0m[0m route_table_ids       = (known after apply)
       [32m+[0m[0m security_group_ids    = [
-          [32m+[0m[0m "sg-021371c9a04fd55fb",
+          [32m+[0m[0m "sg-0db5c9b4064798dcd",
+        ]
+      [32m+[0m[0m service_name          = "com.amazonaws.us-east-1.ec2"
+      [32m+[0m[0m service_region        = (known after apply)
+      [32m+[0m[0m state                 = (known after apply)
+      [32m+[0m[0m subnet_ids            = [
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
+        ]
+      [32m+[0m[0m tags_all              = (known after apply)
+      [32m+[0m[0m vpc_endpoint_type     = "Interface"
+      [32m+[0m[0m vpc_id                = "vpc-0475da6c0045face1"
+
+      [32m+[0m[0m dns_options (known after apply)
+
+      [32m+[0m[0m subnet_configuration (known after apply)
+    }
+
+[1m  # aws_vpc_endpoint.eks[0m will be created
+[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "eks" {
+      [32m+[0m[0m arn                   = (known after apply)
+      [32m+[0m[0m cidr_blocks           = (known after apply)
+      [32m+[0m[0m dns_entry             = (known after apply)
+      [32m+[0m[0m id                    = (known after apply)
+      [32m+[0m[0m ip_address_type       = (known after apply)
+      [32m+[0m[0m network_interface_ids = (known after apply)
+      [32m+[0m[0m owner_id              = (known after apply)
+      [32m+[0m[0m policy                = (known after apply)
+      [32m+[0m[0m prefix_list_id        = (known after apply)
+      [32m+[0m[0m private_dns_enabled   = true
+      [32m+[0m[0m requester_managed     = (known after apply)
+      [32m+[0m[0m route_table_ids       = (known after apply)
+      [32m+[0m[0m security_group_ids    = [
+          [32m+[0m[0m "sg-0db5c9b4064798dcd",
         ]
       [32m+[0m[0m service_name          = "com.amazonaws.us-east-1.eks"
       [32m+[0m[0m service_region        = (known after apply)
       [32m+[0m[0m state                 = (known after apply)
       [32m+[0m[0m subnet_ids            = [
-          [32m+[0m[0m "subnet-05200f4012af680b2",
-          [32m+[0m[0m "subnet-0a59062530f4acae9",
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
         ]
       [32m+[0m[0m tags_all              = (known after apply)
       [32m+[0m[0m vpc_endpoint_type     = "Interface"
-      [32m+[0m[0m vpc_id                = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                = "vpc-0475da6c0045face1"
+
+      [32m+[0m[0m dns_options (known after apply)
+
+      [32m+[0m[0m subnet_configuration (known after apply)
+    }
+
+[1m  # aws_vpc_endpoint.sts[0m will be created
+[0m  [32m+[0m[0m resource "aws_vpc_endpoint" "sts" {
+      [32m+[0m[0m arn                   = (known after apply)
+      [32m+[0m[0m cidr_blocks           = (known after apply)
+      [32m+[0m[0m dns_entry             = (known after apply)
+      [32m+[0m[0m id                    = (known after apply)
+      [32m+[0m[0m ip_address_type       = (known after apply)
+      [32m+[0m[0m network_interface_ids = (known after apply)
+      [32m+[0m[0m owner_id              = (known after apply)
+      [32m+[0m[0m policy                = (known after apply)
+      [32m+[0m[0m prefix_list_id        = (known after apply)
+      [32m+[0m[0m private_dns_enabled   = (known after apply)
+      [32m+[0m[0m requester_managed     = (known after apply)
+      [32m+[0m[0m route_table_ids       = (known after apply)
+      [32m+[0m[0m security_group_ids    = [
+          [32m+[0m[0m "sg-0db5c9b4064798dcd",
+        ]
+      [32m+[0m[0m service_name          = "com.amazonaws.us-east-1.sts"
+      [32m+[0m[0m service_region        = (known after apply)
+      [32m+[0m[0m state                 = (known after apply)
+      [32m+[0m[0m subnet_ids            = [
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
+        ]
+      [32m+[0m[0m tags_all              = (known after apply)
+      [32m+[0m[0m vpc_endpoint_type     = "Interface"
+      [32m+[0m[0m vpc_id                = "vpc-0475da6c0045face1"
 
       [32m+[0m[0m dns_options (known after apply)
 
@@ -1497,8 +1629,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m resources              = (known after apply)
       [32m+[0m[0m status                 = (known after apply)
       [32m+[0m[0m subnet_ids             = [
-          [32m+[0m[0m "subnet-05200f4012af680b2",
-          [32m+[0m[0m "subnet-0a59062530f4acae9",
+          [32m+[0m[0m "subnet-09b918113ef119930",
+          [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
         ]
       [32m+[0m[0m tags_all               = (known after apply)
       [32m+[0m[0m version                = (known after apply)
@@ -1540,8 +1672,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m resources              = (known after apply)
       [32m+[0m[0m status                 = (known after apply)
       [32m+[0m[0m subnet_ids             = [
-          [32m+[0m[0m "subnet-062a9be1c94f41b40",
-          [32m+[0m[0m "subnet-093b5acae0d3fbaea",
+          [32m+[0m[0m "subnet-00d4239330c180d57",
+          [32m+[0m[0m "subnet-02daa126407b94eff",
         ]
       [32m+[0m[0m tags_all               = (known after apply)
       [32m+[0m[0m version                = (known after apply)
@@ -1669,7 +1801,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m tags_all               = {
           [32m+[0m[0m "Name" = "dev-eks-cluster-sg"
         }
-      [32m+[0m[0m vpc_id                 = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                 = "vpc-0475da6c0045face1"
     }
 
 [1m  # module.eks.module.eks.data.tls_certificate.this[0][0m will be read during apply
@@ -1760,10 +1892,10 @@ Terraform will perform the following actions:
             ]
           [32m+[0m[0m security_group_ids        = (known after apply)
           [32m+[0m[0m subnet_ids                = [
-              [32m+[0m[0m "subnet-05200f4012af680b2",
-              [32m+[0m[0m "subnet-062a9be1c94f41b40",
-              [32m+[0m[0m "subnet-093b5acae0d3fbaea",
-              [32m+[0m[0m "subnet-0a59062530f4acae9",
+              [32m+[0m[0m "subnet-00d4239330c180d57",
+              [32m+[0m[0m "subnet-02daa126407b94eff",
+              [32m+[0m[0m "subnet-09b918113ef119930",
+              [32m+[0m[0m "subnet-09d1c1b3093f18a0c",
             ]
           [32m+[0m[0m vpc_id                    = (known after apply)
         }
@@ -1986,7 +2118,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m tags_all               = {
           [32m+[0m[0m "Name" = "dev-devsecops-cluster-cluster"
         }
-      [32m+[0m[0m vpc_id                 = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                 = "vpc-0475da6c0045face1"
     }
 
 [1m  # module.eks.module.eks.aws_security_group.node[0][0m will be created
@@ -2008,7 +2140,7 @@ Terraform will perform the following actions:
           [32m+[0m[0m "Name"                                        = "dev-devsecops-cluster-node"
           [32m+[0m[0m "kubernetes.io/cluster/dev-devsecops-cluster" = "owned"
         }
-      [32m+[0m[0m vpc_id                 = "vpc-0a5b2ac6e14df6b6b"
+      [32m+[0m[0m vpc_id                 = "vpc-0475da6c0045face1"
     }
 
 [1m  # module.eks.module.eks.aws_security_group_rule.cluster["ingress_nodes_443"][0m will be created
@@ -2301,84 +2433,90 @@ Terraform will perform the following actions:
         }
     }
 
-[1mPlan:[0m 37 to add, 0 to change, 0 to destroy.
+[1mPlan:[0m 39 to add, 0 to change, 0 to destroy.
 [0m
 Changes to Outputs:
   [32m+[0m[0m eks_cluster_name = "devsecops-cluster"
-[0m[1mmodule.eks.module.eks.aws_security_group.cluster[0]: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.aws_cloudwatch_log_group.this[0]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_iam_role.this[0]: Creating...[0m[0m
-[0m[1mmodule.eks.aws_iam_role.nodes: Creating...[0m[0m
-[0m[1mmodule.eks.aws_security_group.eks_cluster: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.aws_security_group.node[0]: Creating...[0m[0m
+[0m[1maws_security_group_rule.allow_vpc_endpoint_jenkins: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group.cluster[0]: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.aws_iam_policy.custom[0]: Creating...[0m[0m
-[0m[1maws_security_group_rule.jenkins_to_eks: Creating...[0m[0m
-[0m[1maws_vpc_endpoint.eks: Creating...[0m[0m
+[0m[1mmodule.eks.aws_iam_role.nodes: Creating...[0m[0m
+[0m[1maws_vpc_endpoint.sts: Creating...[0m[0m
+[0m[1maws_vpc_endpoint.ec2: Creating...[0m[0m
+[0m[1mmodule.eks.aws_security_group.eks_cluster: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_iam_role.this[0]: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.aws_cloudwatch_log_group.this[0]: Creation complete after 0s [id=/aws/eks/dev-devsecops-cluster/cluster][0m
-[0m[1mmodule.eks.aws_iam_role.nodes: Creation complete after 0s [id=dev-eks-node-role][0m
-[0m[1mmodule.eks.module.eks.aws_iam_policy.custom[0]: Creation complete after 0s [id=arn:aws:iam::148761635167:policy/dev-devsecops-cluster-cluster-20250716180843197100000004][0m
-[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKS_CNI_Policy: Creating...[0m[0m
-[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKSWorkerNodePolicy: Creating...[0m[0m
-[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEC2ContainerRegistryReadOnly: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_iam_role.this[0]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250716180843165300000001][0m
-[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Creating...[0m[0m
+[0m[1maws_security_group_rule.jenkins_to_eks: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_iam_policy.custom[0]: Creation complete after 0s [id=arn:aws:iam::148761635167:policy/dev-devsecops-cluster-cluster-20250717013028743800000002][0m
+[0m[1mmodule.eks.module.eks.aws_iam_role.this[0]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250717013028762100000006][0m
 [0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.custom[0]: Creating...[0m[0m
-[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKS_CNI_Policy: Creation complete after 0s [id=dev-eks-node-role-20250716180843440300000006][0m
 [0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Creating...[0m[0m
-[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEC2ContainerRegistryReadOnly: Creation complete after 1s [id=dev-eks-node-role-20250716180843499100000007][0m
+[0m[1mmodule.eks.aws_iam_role.nodes: Creation complete after 0s [id=dev-eks-node-role][0m
+[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.custom[0]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250717013028762100000006-20250717013028997700000008][0m
 [0m[1mmodule.eks.module.eks.module.kms.data.aws_iam_policy_document.this[0]: Reading...[0m[0m
-[0m[1mmodule.eks.module.eks.module.kms.data.aws_iam_policy_document.this[0]: Read complete after 0s [id=2569211986][0m
-[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.custom[0]: Creation complete after 1s [id=dev-devsecops-cluster-cluster-20250716180843165300000001-20250716180843513600000008][0m
-[0m[1maws_security_group_rule.jenkins_to_eks: Creation complete after 1s [id=sgrule-2531117506][0m
+[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250717013028762100000006-20250717013028988900000007][0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKS_CNI_Policy: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.module.kms.data.aws_iam_policy_document.this[0]: Read complete after 0s [id=3044279827][0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEC2ContainerRegistryReadOnly: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250717013028762100000006-20250717013029023800000009][0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKSWorkerNodePolicy: Creating...[0m[0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKS_CNI_Policy: Creation complete after 0s [id=dev-eks-node-role-2025071701302909840000000a][0m
+[0m[1maws_security_group_rule.allow_vpc_endpoint_jenkins: Creation complete after 0s [id=sgrule-4156799900][0m
 [0m[1mmodule.eks.module.eks.module.kms.aws_kms_key.this[0]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Creation complete after 1s [id=dev-devsecops-cluster-cluster-20250716180843165300000001-20250716180843540200000009][0m
-[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKSWorkerNodePolicy: Creation complete after 1s [id=dev-eks-node-role-2025071618084357840000000a][0m
-[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250716180843165300000001-2025071618084360900000000b][0m
-[0m[1mmodule.eks.module.eks.aws_security_group.cluster[0]: Creation complete after 1s [id=sg-0ca66e04fd6bf51a2][0m
-[0m[1mmodule.eks.module.eks.aws_security_group.node[0]: Creation complete after 1s [id=sg-0b5aa25fde010761f][0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEC2ContainerRegistryReadOnly: Creation complete after 0s [id=dev-eks-node-role-2025071701302910980000000b][0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.nodes_AmazonEKSWorkerNodePolicy: Creation complete after 0s [id=dev-eks-node-role-2025071701302912410000000c][0m
+[0m[1maws_security_group_rule.jenkins_to_eks: Creation complete after 0s [id=sgrule-1252713][0m
+[0m[1mmodule.eks.module.eks.aws_security_group.node[0]: Creation complete after 1s [id=sg-0045a78c013693041][0m
+[0m[1mmodule.eks.module.eks.aws_security_group.cluster[0]: Creation complete after 1s [id=sg-08126ec2ef9f5cdf1][0m
 [0m[1mmodule.eks.module.eks.aws_security_group_rule.cluster["ingress_nodes_443"]: Creating...[0m[0m
-[0m[1mmodule.eks.aws_security_group.eks_cluster: Creation complete after 2s [id=sg-0993b96d15fd2d398][0m
+[0m[1mmodule.eks.aws_security_group.eks_cluster: Creation complete after 1s [id=sg-0a4f65dc81f52fed5][0m
 [0m[1maws_security_group_rule.allow_jenkins_to_eks: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["egress_all"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.cluster["ingress_nodes_443"]: Creation complete after 1s [id=sgrule-1481418190][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_443"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Creation complete after 0s [id=sgrule-3873683380][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Creating...[0m[0m
-[0m[1maws_security_group_rule.allow_jenkins_to_eks: Creation complete after 0s [id=sgrule-2990756790][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Creation complete after 1s [id=sgrule-2434709598][0m
 [0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Creation complete after 1s [id=sgrule-1482481608][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Creation complete after 1s [id=sgrule-3222298848][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["egress_all"]: Creation complete after 2s [id=sgrule-877505009][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Creation complete after 2s [id=sgrule-1196958802][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_443"]: Creation complete after 2s [id=sgrule-3996410074][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Creation complete after 3s [id=sgrule-46738238][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Creation complete after 3s [id=sgrule-3808921533][0m
-[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Creation complete after 2s [id=sgrule-2185397375][0m
-[0m[1maws_vpc_endpoint.eks: Still creating... [00m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["egress_all"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_443"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.cluster["ingress_nodes_443"]: Creation complete after 0s [id=sgrule-3052064266][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Creating...[0m[0m
+[0m[1maws_security_group_rule.allow_jenkins_to_eks: Creation complete after 1s [id=sgrule-1398179128][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Creation complete after 1s [id=sgrule-2401574726][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["egress_all"]: Creation complete after 1s [id=sgrule-1487247137][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Creation complete after 1s [id=sgrule-1429947633][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Creating...[0m[0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Creation complete after 2s [id=sgrule-1181186256][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_443"]: Creation complete after 2s [id=sgrule-1378232068][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Creation complete after 3s [id=sgrule-3725492434][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Creation complete after 2s [id=sgrule-629964085][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Creation complete after 2s [id=sgrule-2178146010][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Creation complete after 3s [id=sgrule-832206650][0m
+[0m[1mmodule.eks.module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Creation complete after 2s [id=sgrule-3251232555][0m
+[0m[1maws_vpc_endpoint.sts: Still creating... [00m10s elapsed][0m[0m
+[0m[1maws_vpc_endpoint.ec2: Still creating... [00m10s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.module.kms.aws_kms_key.this[0]: Still creating... [00m10s elapsed][0m[0m
-[0m[1maws_vpc_endpoint.eks: Still creating... [00m20s elapsed][0m[0m
+[0m[1maws_vpc_endpoint.sts: Still creating... [00m20s elapsed][0m[0m
+[0m[1maws_vpc_endpoint.ec2: Still creating... [00m20s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.module.kms.aws_kms_key.this[0]: Still creating... [00m20s elapsed][0m[0m
-[0m[1mmodule.eks.module.eks.module.kms.aws_kms_key.this[0]: Creation complete after 20s [id=f2634414-47c3-4eb4-a98e-1c767a80d9bf][0m
+[0m[1mmodule.eks.module.eks.module.kms.aws_kms_key.this[0]: Creation complete after 21s [id=8b322a24-31f9-472f-8597-91a193b44099][0m
 [0m[1mmodule.eks.module.eks.module.kms.aws_kms_alias.this["cluster"]: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.aws_iam_policy.cluster_encryption[0]: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_iam_policy.cluster_encryption[0]: Creation complete after 0s [id=arn:aws:iam::148761635167:policy/dev-devsecops-cluster-cluster-ClusterEncryption2025071618090459330000000c][0m
+[0m[1mmodule.eks.module.eks.aws_iam_policy.cluster_encryption[0]: Creation complete after 0s [id=arn:aws:iam::148761635167:policy/dev-devsecops-cluster-cluster-ClusterEncryption2025071701305007440000000d][0m
 [0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.cluster_encryption[0]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.cluster_encryption[0]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250716180843165300000001-2025071618090483690000000d][0m
-[0m[1mmodule.eks.module.eks.module.kms.aws_kms_alias.this["cluster"]: Creation complete after 0s [id=alias/eks/dev-devsecops-cluster][0m
-[0m[1maws_vpc_endpoint.eks: Still creating... [00m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks.aws_iam_role_policy_attachment.cluster_encryption[0]: Creation complete after 0s [id=dev-devsecops-cluster-cluster-20250717013028762100000006-2025071701305027610000000e][0m
+[0m[1mmodule.eks.module.eks.module.kms.aws_kms_alias.this["cluster"]: Creation complete after 1s [id=alias/eks/dev-devsecops-cluster][0m
+[0m[1maws_vpc_endpoint.sts: Still creating... [00m30s elapsed][0m[0m
+[0m[1maws_vpc_endpoint.ec2: Still creating... [00m30s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [00m10s elapsed][0m[0m
-[0m[1maws_vpc_endpoint.eks: Creation complete after 32s [id=vpce-015dfcc8e9bbe3159][0m
-[0m[1maws_security_group_rule.allow_vpc_endpoint_jenkins: Creating...[0m[0m
-[0m[1maws_security_group_rule.allow_vpc_endpoint_jenkins: Creation complete after 1s [id=sgrule-2874844606][0m
+[0m[1maws_vpc_endpoint.sts: Creation complete after 32s [id=vpce-02dce53e57c743f5e][0m
+[0m[1maws_vpc_endpoint.ec2: Still creating... [00m40s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [00m20s elapsed][0m[0m
+[0m[1maws_vpc_endpoint.ec2: Creation complete after 42s [id=vpce-00c2c402e82e24611][0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [00m30s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [00m40s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [00m50s elapsed][0m[0m
@@ -2436,39 +2574,38 @@ Changes to Outputs:
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [09m30s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [09m40s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [09m50s elapsed][0m[0m
-[0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Still creating... [10m00s elapsed][0m[0m
-[0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Creation complete after 10m4s [id=dev-devsecops-cluster][0m
+[0m[1mmodule.eks.module.eks.aws_eks_cluster.this[0]: Creation complete after 9m54s [id=dev-devsecops-cluster][0m
 [0m[1mmodule.eks.module.eks.data.tls_certificate.this[0]: Reading...[0m[0m
 [0m[1mmodule.eks.module.eks.time_sleep.this[0]: Creating...[0m[0m
 [0m[1mmodule.eks.module.eks.data.tls_certificate.this[0]: Read complete after 0s [id=922877a0975ad078a65b8ff11ebc47b8311945c7][0m
 [0m[1mmodule.eks.module.eks.aws_iam_openid_connect_provider.oidc_provider[0]: Creating...[0m[0m
-[0m[1mmodule.eks.module.eks.aws_iam_openid_connect_provider.oidc_provider[0]: Creation complete after 0s [id=arn:aws:iam::148761635167:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/F43B2802D575BD7A035614A003B07F93][0m
+[0m[1mmodule.eks.module.eks.aws_iam_openid_connect_provider.oidc_provider[0]: Creation complete after 0s [id=arn:aws:iam::148761635167:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/36D172A7E5263AAF8B5A92D0A573DFE6][0m
 [0m[1mmodule.eks.module.eks.time_sleep.this[0]: Still creating... [00m10s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.time_sleep.this[0]: Still creating... [00m20s elapsed][0m[0m
 [0m[1mmodule.eks.module.eks.time_sleep.this[0]: Still creating... [00m30s elapsed][0m[0m
-[0m[1mmodule.eks.module.eks.time_sleep.this[0]: Creation complete after 30s [id=2025-07-16T18:19:39Z][0m
+[0m[1mmodule.eks.module.eks.time_sleep.this[0]: Creation complete after 30s [id=2025-07-17T01:41:13Z][0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Creating...[0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Creating...[0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m10s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [00m10s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m10s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m20s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [00m20s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m30s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [00m30s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m30s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m40s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [00m40s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m50s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [00m50s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [00m50s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m00s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [01m00s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m10s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [01m10s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m20s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m10s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [01m20s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m30s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m20s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [01m30s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [01m40s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m30s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m40s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [01m40s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [01m50s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [01m50s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [02m00s elapsed][0m[0m
@@ -2479,26 +2616,26 @@ Changes to Outputs:
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [02m20s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [02m30s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [02m30s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [02m40s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [02m40s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [02m50s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [02m40s elapsed][0m[0m
 [0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [02m50s elapsed][0m[0m
-[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Creation complete after 2m57s [id=dev-devsecops-cluster:dev-private-node-group][0m
-[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Creation complete after 2m57s [id=dev-devsecops-cluster:dev-public-node-group][0m
-[0m[1m[32m
-Apply complete! Resources: 37 added, 0 changed, 0 destroyed.
-[0m[0m[1m[32m
-Outputs:
-
-[0meks_cluster_name = "devsecops-cluster"
-[Pipeline] script
-[Pipeline] {
-[Pipeline] sh
-+ terraform output -raw eks_cluster_name
-[Pipeline] echo
-EKS Cluster Name: dev-devsecops-cluster
-[Pipeline] }
-[Pipeline] // script
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [02m50s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Still creating... [03m00s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [03m00s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.private_node_group: Creation complete after 3m7s [id=dev-devsecops-cluster:dev-private-node-group][0m
+[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [03m10s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [03m20s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Still creating... [03m30s elapsed][0m[0m
+[0m[1mmodule.eks.aws_eks_node_group.public_node_group: Creation complete after 3m39s [id=dev-devsecops-cluster:dev-public-node-group][0m
+[0m[1maws_vpc_endpoint.eks: Creating...[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mcreating EC2 VPC Endpoint (com.amazonaws.us-east-1.eks): operation error EC2: CreateVpcEndpoint, https response error StatusCode: 400, RequestID: e30ad728-8ffa-4121-9907-84da6bacab82, api error InvalidParameter: Enabling private DNS requires both enableDnsSupport and enableDnsHostnames VPC attributes set to true for vpc-0475da6c0045face1[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  with aws_vpc_endpoint.eks,
+[31m│[0m [0m  on main.tf line 58, in resource "aws_vpc_endpoint" "eks":
+[31m│[0m [0m  58: resource "aws_vpc_endpoint" "eks" [4m{[0m[0m
+[31m│[0m [0m
+[31m╵[0m[0m
 [Pipeline] }
 [Pipeline] // withAWS
 [Pipeline] }
@@ -2507,40 +2644,14 @@ EKS Cluster Name: dev-devsecops-cluster
 [Pipeline] // stage
 [Pipeline] stage
 [Pipeline] { (Configure Kubernetes Access)
-[Pipeline] script
-[Pipeline] {
-[Pipeline] timeout
-Timeout set to expire in 10 min
-[Pipeline] {
-[Pipeline] sh
-+ aws eks describe-cluster --name dev-devsecops-cluster --region us-east-1 --query cluster.status --output text
-[Pipeline] }
-[Pipeline] // timeout
-[Pipeline] sh
-+ mkdir -p /var/lib/jenkins/.kube
-+ chown -R jenkins:jenkins /var/lib/jenkins/.kube
-+ chmod 700 /var/lib/jenkins/.kube
-[Pipeline] sh
-+ aws eks update-kubeconfig --name dev-devsecops-cluster --region us-east-1
-Added new context arn:aws:eks:us-east-1:148761635167:cluster/dev-devsecops-cluster to /var/lib/jenkins/.kube/config
-[Pipeline] }
-[Pipeline] // script
+Stage "Configure Kubernetes Access" skipped due to earlier failure(s)
+[Pipeline] getContext
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] stage
 [Pipeline] { (Deploy Application)
-[Pipeline] script
-[Pipeline] {
-[Pipeline] dir
-Running in /var/lib/jenkins/workspace/flask-app-deployment/infra/k8s/base
-[Pipeline] {
-[Pipeline] sh
-+ kubectl apply -f namespace.yaml
-error: error validating "namespace.yaml": error validating data: failed to download openapi: Get "https://F43B2802D575BD7A035614A003B07F93.gr7.us-east-1.eks.amazonaws.com/openapi/v2?timeout=32s": dial tcp 10.1.0.125:443: i/o timeout; if you choose to ignore these errors, turn validation off with --validate=false
-[Pipeline] }
-[Pipeline] // dir
-[Pipeline] }
-[Pipeline] // script
+Stage "Deploy Application" skipped due to earlier failure(s)
+[Pipeline] getContext
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] stage

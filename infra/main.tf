@@ -60,7 +60,7 @@ resource "aws_vpc_endpoint" "eks" {
   service_name = "com.amazonaws.${var.aws_region}.eks"
   vpc_endpoint_type = "Interface"
   subnet_ids   = module.network.private_subnets
-  security_group_ids = [module.jenkins.security_group_id] # Security group for Jenkins server
+  security_group_ids = [module.eks.eks_cluster_security_group_id] # Security group for eks
   private_dns_enabled = true
   depends_on = [ module.network, module.eks ]
 }
@@ -70,8 +70,8 @@ resource "aws_vpc_endpoint" "sts" {
   service_name = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type = "Interface"
   subnet_ids = module.network.private_subnets
-  security_group_ids = [module.jenkins.security_group_id] # Security group for Jenkins server
-  
+  security_group_ids = [module.eks.eks_cluster_security_group_id] # Security group for Jenkins server
+  private_dns_enabled = true
 }
 
 resource "aws_vpc_endpoint" "ec2" {
@@ -80,6 +80,7 @@ resource "aws_vpc_endpoint" "ec2" {
   vpc_endpoint_type = "Interface"
   subnet_ids = module.network.private_subnets
   security_group_ids = [module.jenkins.security_group_id] # Security group for Jenkins server
+  private_dns_enabled = true
 }
 
 resource "aws_security_group_rule" "allow_jenkins_to_eks" {
@@ -97,7 +98,7 @@ resource "aws_security_group_rule" "jenkins_to_eks" {
   to_port                  = 443
   protocol                 = "tcp"
   security_group_id        = module.jenkins.security_group_id         # Jenkins security group
-  cidr_blocks = [var.vpc_cidr]  # EKS cluster security group
+  source_security_group_id = module.eks.eks_cluster_security_group_id                                                                    #cidr_blocks = [var.vpc_cidr]  # EKS cluster security group
 }
 
 # adding a rule to allow Jenkins to access EKS cluster
@@ -107,5 +108,6 @@ resource "aws_security_group_rule" "allow_vpc_endpoint_jenkins" {
   to_port                  = 443
   protocol                 = "tcp"
   security_group_id        = module.jenkins.security_group_id     # aws_vpc_endpoint.eks.security_group_ids[0] #tolist(aws_vpc_endpoint.eks.security_group_ids)[0]
-  source_security_group_id = module.jenkins.security_group_id
+  source_security_group_id = module.eks.eks_cluster_security_group_id  #module.jenkins.security_group_id
 }
+
