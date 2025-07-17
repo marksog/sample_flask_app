@@ -6,6 +6,7 @@ terraform {
     }
   }
 }
+
 module "network" {
     source = "./modules/network"
     env    = var.env
@@ -28,7 +29,7 @@ module "eks" {
 
   # Optional: add a list of CIDRs allowed to access public endpoint (if you set public access to true)
   # cluster_endpoint_public_access_cidrs = ["YOUR_IP/32"]
-    cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  cluster_endpoint_private_access = var.cluster_endpoint_private_access
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 }
 
@@ -60,9 +61,13 @@ resource "aws_vpc_endpoint" "eks" {
   service_name = "com.amazonaws.${var.aws_region}.eks"
   vpc_endpoint_type = "Interface"
   subnet_ids   = module.network.private_subnets
-  security_group_ids = [module.eks.eks_cluster_security_group_id] # Security group for eks
+  security_group_ids = [module.jenkins.security_group_id] # Allow Jenkins to access
   private_dns_enabled = true
   depends_on = [ module.network, module.eks ]
+
+  tags = {
+    Name = "${var.env}-eks-endpoint"
+  }
 }
 
 resource "aws_vpc_endpoint" "sts" {
@@ -70,8 +75,12 @@ resource "aws_vpc_endpoint" "sts" {
   service_name = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type = "Interface"
   subnet_ids = module.network.private_subnets
-  security_group_ids = [module.eks.eks_cluster_security_group_id] # Security group for Jenkins server
+  security_group_ids = [module.jenkins.security_group_id] # Consistent with eks endpoint
   private_dns_enabled = true
+
+  tags = {
+    Name = "${var.env}-sts-endpoint"
+  }
 }
 
 resource "aws_vpc_endpoint" "ec2" {
@@ -81,9 +90,16 @@ resource "aws_vpc_endpoint" "ec2" {
   subnet_ids = module.network.private_subnets
   security_group_ids = [module.jenkins.security_group_id] # Security group for Jenkins server
   private_dns_enabled = true
+  
+  tags = {
+    Name = "${var.env}-ec2-endpoint"
+  }
+
+  
 }
 
 resource "aws_security_group_rule" "allow_jenkins_to_eks" {
+  description              = "Allow Jenkins to access EKS API"
   type                     = "ingress"
   from_port                = 443
   to_port                  = 443
@@ -93,6 +109,7 @@ resource "aws_security_group_rule" "allow_jenkins_to_eks" {
 }
 
 resource "aws_security_group_rule" "jenkins_to_eks" {
+  description              = "Allow Jenkins to connect to EKS API"
   type                     = "egress"
   from_port                = 443
   to_port                  = 443
@@ -101,13 +118,18 @@ resource "aws_security_group_rule" "jenkins_to_eks" {
   source_security_group_id = module.eks.eks_cluster_security_group_id                                                                    #cidr_blocks = [var.vpc_cidr]  # EKS cluster security group
 }
 
-# adding a rule to allow Jenkins to access EKS cluster
-resource "aws_security_group_rule" "allow_vpc_endpoint_jenkins" {
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  security_group_id        = module.jenkins.security_group_id     # aws_vpc_endpoint.eks.security_group_ids[0] #tolist(aws_vpc_endpoint.eks.security_group_ids)[0]
-  source_security_group_id = module.eks.eks_cluster_security_group_id  #module.jenkins.security_group_id
+# Additional rule to ensure VPC endpoint communication
+resource "aws_security_group_rule" "jenkins_allow_vpc_endpoints" {
+  description       = "Allow Jenkins to access VPC endpoints"
+  type              = "egress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = module.jenkins.security_group_id
+  prefix_list_ids   = [data.aws_prefix_list.vpc_endpoints.id]
+}
+
+data "aws_prefix_list" "vpc_endpoints" {
+  name = "com.amazonaws.${var.aws_region}.execute-api"
 }
 
