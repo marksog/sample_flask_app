@@ -126,10 +126,10 @@ resource "aws_security_group_rule" "jenkins_allow_vpc_endpoints" {
   to_port           = 443
   protocol          = "tcp"
   security_group_id = module.jenkins.security_group_id
-  prefix_list_ids   = [data.aws_prefix_list.vpc_endpoints.id]
+  prefix_list_ids   = [data.aws_prefix_list.eks.id]
 }
 
-data "aws_prefix_list" "vpc_endpoints" {
-  name = "com.amazonaws.${var.aws_region}.execute-api"
+data "aws_prefix_list" "eks" {
+  name = "com.amazonaws.${var.aws_region}.eks"
 }
 
