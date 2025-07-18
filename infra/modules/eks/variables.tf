@@ -44,11 +44,11 @@ variable "subnet_ids" {
 variable "cluster_endpoint_private_access" {
   description = "Enable private access to the Kubernetes API server endpoint"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "cluster_endpoint_public_access" {
   description = "Enable public access to the Kubernetes API server endpoint"
   type        = bool
-  default     = true
+  default     = false
 }

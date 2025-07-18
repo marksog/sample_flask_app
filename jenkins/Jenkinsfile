@@ -110,7 +110,7 @@ pipeline {
             steps {
                 script {
                     dir('infra/k8s/base') { // Navigate to the correct directory
-                        sh "kubectl apply -f namespace.yaml"
+                        sh "kubectl apply -f namespace.yaml --validate=false"
                         sh "kubectl apply -f monitoring/prometheus-values.yaml"
                         sh "kubectl apply -f argo/applicationset.yaml"
                     }
