@@ -80,6 +80,14 @@ resource "aws_security_group" "jenkins" {
     cidr_blocks = [var.vpc_cidr] # Restrict to your VPC CIDR
   }
   
+  # Allow return traffic from VPC endpoints
+ingress {
+  description = "Allow HTTPS responses from VPC endpoints"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  cidr_blocks = [var.vpc_cidr]
+}
   # Allow all outbound traffic from Jenkins server
   egress {
     from_port   = 0

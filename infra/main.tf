@@ -61,7 +61,7 @@ resource "aws_vpc_endpoint" "eks" {
   service_name = "com.amazonaws.${var.aws_region}.eks"
   vpc_endpoint_type = "Interface"
   subnet_ids   = module.network.private_subnets
-  security_group_ids = [module.jenkins.security_group_id] # Allow Jenkins to access
+  security_group_ids = [aws_security_group.vpce_sg.id] # Allow Jenkins to access
   private_dns_enabled = true
   depends_on = [ module.network, module.eks ]
 
@@ -129,7 +129,29 @@ resource "aws_security_group_rule" "jenkins_allow_vpc_endpoints" {
   cidr_blocks      = [var.vpc_cidr]  # Allow access to all VPC resources
 }
 
-# data "aws_prefix_list" "eks" {
-#   name = "com.amazonaws.${var.aws_region}.eks"
-# }
+resource "aws_security_group_rule" "allow_vpce_to_eks" {
+  description       = "Allow VPC Endpoint to EKS API"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = module.eks.eks_cluster_security_group_id
+  cidr_blocks      = [var.vpc_cidr]  # Or source_security_group_id if using a custom SG for VPCE
+}
+
+
+resource "aws_security_group" "vpce_sg" {
+  vpc_id = module.network.vpc_id
+
+  ingress {
+    from_port                = 443
+    to_port                  = 443
+    protocol                 = "tcp"
+    cidr_blocks = [var.vpc_cidr] # Allow access from the VPC CIDR
+  }
+
+  tags = {
+    Name = "${var.env}-vpce-sg"
+  }
+}
 
