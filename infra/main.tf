@@ -129,7 +129,7 @@ resource "aws_security_group_rule" "jenkins_allow_vpc_endpoints" {
   cidr_blocks      = [var.vpc_cidr]  # Allow access to all VPC resources
 }
 
-data "aws_prefix_list" "eks" {
-  name = "com.amazonaws.${var.aws_region}.eks"
-}
+# data "aws_prefix_list" "eks" {
+#   name = "com.amazonaws.${var.aws_region}.eks"
+# }
 
