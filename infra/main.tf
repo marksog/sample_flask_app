@@ -126,7 +126,7 @@ resource "aws_security_group_rule" "jenkins_allow_vpc_endpoints" {
   to_port           = 443
   protocol          = "tcp"
   security_group_id = module.jenkins.security_group_id
-  prefix_list_ids   = [data.aws_prefix_list.eks.id]
+  cidr_blocks      = [var.vpc_cidr]  # Allow access to all VPC resources
 }
 
 data "aws_prefix_list" "eks" {
