@@ -16,6 +16,7 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [
     aws_security_group.bastion_sg.id
   ]
+  
   user_data = <<-EOF
     #!/bin/bash
     yum update -y

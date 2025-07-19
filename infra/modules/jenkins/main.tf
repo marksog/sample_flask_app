@@ -54,16 +54,16 @@ resource "aws_security_group" "jenkins" {
   description = "Security group for Jenkins controller"
   vpc_id      = var.vpc_id
   
-  # allow HTTP traffice from ALB to Jenkins
+  # Allow HTTP traffic from ALB to Jenkins
   ingress {
     description = "HTTP from ALB"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
     security_groups = [aws_security_group.alb.id] # Replace with ALB's subnet CIDR or trusted IP range
-    
   }
 
+  # Allow SSH traffic from bastion
   ingress {
     description = "SSH from bastion"
     from_port   = 22
@@ -72,22 +72,15 @@ resource "aws_security_group" "jenkins" {
     security_groups = [var.bastion_sg_id]
   }
 
+  # Allow HTTPS traffic (Kubernetes API and VPC endpoints)
   ingress {
-    description = "Kubernetes API access"
+    description = "Allow HTTPS traffic (Kubernetes API and VPC endpoints)"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr] # Restrict to your VPC CIDR
+    cidr_blocks = [var.vpc_cidr]
   }
-  
-  # Allow return traffic from VPC endpoints
-ingress {
-  description = "Allow HTTPS responses from VPC endpoints"
-  from_port   = 443
-  to_port     = 443
-  protocol    = "tcp"
-  cidr_blocks = [var.vpc_cidr]
-}
+
   # Allow all outbound traffic from Jenkins server
   egress {
     from_port   = 0
@@ -207,14 +200,6 @@ resource "aws_iam_role_policy" "jenkins_custom" {
   })
 }
 
-# resource "aws_route53_record" "jenkins" {
-#   count   = var.create_dns_record ? 1 : 0
-#   zone_id = var.route53_zone_id
-#   name    = "jenkins.${var.domain_name}"
-#   type    = "A"
-#   ttl     = 300
-#   records = [aws_instance.jenkins.public_ip]
-# }
 
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
