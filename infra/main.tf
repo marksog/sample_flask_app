@@ -147,7 +147,15 @@ resource "aws_security_group" "vpce_sg" {
     from_port                = 443
     to_port                  = 443
     protocol                 = "tcp"
-    cidr_blocks = [var.vpc_cidr] # Allow access from the VPC CIDR
+    # cidr_blocks = [var.vpc_cidr] # Allow access from the VPC CIDR
+    security_groups = [module.jenkins.security_group_id] # Allow inbound traffic from Jenkins security group
+  }
+
+  egress  {
+    from_port = 433
+    to_port   = 443
+    protocol  = "tcp"
+    security_groups = [module.jenkins.security_group_id] # Allow outbound traffic to Jenkins security group
   }
 
   tags = {
