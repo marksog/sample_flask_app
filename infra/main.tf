@@ -98,48 +98,6 @@ resource "aws_vpc_endpoint" "ec2" {
   
 }
 
-resource "aws_security_group_rule" "allow_jenkins_to_eks" {
-  description              = "Allow Jenkins to access EKS API"
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  security_group_id        = module.eks.eks_cluster_security_group_id # EKS cluster security group
-  source_security_group_id = module.jenkins.security_group_id         # Jenkins security group
-}
-
-resource "aws_security_group_rule" "jenkins_to_eks" {
-  description              = "Allow Jenkins to connect to EKS API"
-  type                     = "egress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  security_group_id        = module.jenkins.security_group_id         # Jenkins security group
-  source_security_group_id = module.eks.eks_cluster_security_group_id                                                                    #cidr_blocks = [var.vpc_cidr]  # EKS cluster security group
-}
-
-# Additional rule to ensure VPC endpoint communication
-resource "aws_security_group_rule" "jenkins_allow_vpc_endpoints" {
-  description       = "Allow Jenkins to access VPC endpoints"
-  type              = "egress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  security_group_id = module.jenkins.security_group_id
-  cidr_blocks      = [var.vpc_cidr]  # Allow access to all VPC resources
-}
-
-resource "aws_security_group_rule" "allow_vpce_to_eks" {
-  description       = "Allow VPC Endpoint to EKS API"
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  security_group_id = module.eks.eks_cluster_security_group_id
-  cidr_blocks      = [var.vpc_cidr]  # Or source_security_group_id if using a custom SG for VPCE
-}
-
-
 resource "aws_security_group" "vpce_sg" {
   vpc_id = module.network.vpc_id
 
@@ -161,5 +119,47 @@ resource "aws_security_group" "vpce_sg" {
   tags = {
     Name = "${var.env}-vpce-sg"
   }
+}
+
+# EKS cluster rules
+resource "aws_security_group_rule" "allow_jenkins_to_eks" {
+  description              = "Allow Jenkins to access EKS API"
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = module.eks.eks_cluster_security_group_id # EKS cluster security group
+  source_security_group_id = module.jenkins.security_group_id         # Jenkins security group
+}
+
+resource "aws_security_group_rule" "allow_vpce_to_eks" {
+  description       = "Allow VPC Endpoint to EKS API"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = module.eks.eks_cluster_security_group_id
+  source_security_group_id = aws_security_group.vpce_sg.id  # Or source_security_group_id if using a custom SG for VPCE
+}
+
+# enhancing egress rules for jenkins (going outbound) or respoonse
+resource "aws_security_group_rule" "jenkins_to_eks" {
+  description              = "Precise Jenkins to EKS"
+  type                     = "egress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = module.jenkins.security_group_id         # Jenkins security group
+  source_security_group_id = module.eks.eks_cluster_security_group_id                                                                    #cidr_blocks = [var.vpc_cidr]  # EKS cluster security group
+}
+
+resource "aws_security_group_rule" "jenkins_allow_vpc_endpoints" {
+  description       = "Allow Jenkins to access VPC endpoints"
+  type              = "egress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = module.jenkins.security_group_id
+  source_security_group_id = aws_security_group.vpce_sg.id
 }
 

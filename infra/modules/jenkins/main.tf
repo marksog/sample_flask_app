@@ -72,23 +72,36 @@ resource "aws_security_group" "jenkins" {
     security_groups = [var.bastion_sg_id]
   }
 
-  # Allow HTTPS traffic (Kubernetes API and VPC endpoints)
-  ingress {
-    description = "Allow HTTPS traffic (Kubernetes API and VPC endpoints)"
+  # Allow HTTPS traffic (Kubernetes API and VPC endpoints) will be done at the root level orchestration
+
+  # SETTING UP EGRESS RULES
+  # some rule will be done at the root level ochestration
+  # temporalily allowing all outbound traffic
+  egress {
+    description = "initial eks/vpc endpoint access"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
+    cidr_blocks = [var.vpc_cidr] # will be ajducted in the root main.tf
   }
 
-  # Allow all outbound traffic from Jenkins server
+   # Allow outbound for package updates (optional)
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description = "For OS updates"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Allow outbound DNS resolution
+  egress {
+    description = "DNS resolution"
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   tags = {
     Name = "${var.env}-jenkins-sg"
   }

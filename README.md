@@ -116,6 +116,39 @@ Move the Jenkins server to a private subnet that has a route to a NAT gateway. T
 }
 ```
 
+#### Security group communitcation
+```mermaid
+sequenceDiagram
+    Jenkins->>+VPC Endpoint: HTTPS Request (443)
+    VPC Endpoint->>+EKS API: Forward Request
+    EKS API-->>-VPC Endpoint: Response
+    VPC Endpoint-->>-Jenkins: Return Response
+```
+
+Security Group Rules Breakdown
+
+## Network Security Configuration
+
+```mermaid
+flowchart LR
+    Jenkins -->|egress 443| VPCE
+    VPCE -->|ingress 443| EKS
+    EKS -->|ingress 443| Jenkins
+    VPCE -->|egress 443| Jenkins
+```
+
+### Security Group Rules
+
+| Component       | Direction | Port | Source/Target      | Purpose                          |
+|-----------------|-----------|------|--------------------|----------------------------------|
+| Jenkins SG      | Egress    | 443  | VPCE SG            | Jenkins → VPC Endpoints          |
+| Jenkins SG      | Egress    | 443  | EKS SG             | Jenkins → EKS API                |
+| VPC Endpoint SG | Ingress   | 443  | Jenkins SG         | Allow endpoint access            |
+| VPC Endpoint SG | Egress    | 443  | Jenkins SG         | Return traffic to Jenkins        |
+| EKS API SG      | Ingress   | 443  | Jenkins SG         | Allow API access                 |
+| EKS API SG      | Ingress   | 443  | VPC Endpoint SG    | Allow endpoint forwarding        |
+
+
 ##### Option 2: Enable Public Access for the EKS API Endpoint
 Update the IAM role to include eks:UpdateClusterConfig.
 

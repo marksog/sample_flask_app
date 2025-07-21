@@ -128,26 +128,10 @@ resource "aws_iam_role_policy_attachment" "nodes_AmazonEKS_CNI_Policy" {
 
 resource "aws_security_group" "eks_cluster" {
   name        = "${var.env}-eks-cluster-sg"
-  description = "Security group for EKS cluster"
+  description = "Security group for EKS cluster which is restricted to the VPC"
   vpc_id      = var.vpc_id
 
-  # Allow all inbound traffic (adjust as needed)
-  ingress {
-    description = "Allow inbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Allow all outbound traffic
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
+  # Not putting any default ingress and egress rules yet.
   tags = {
     Name = "${var.env}-eks-cluster-sg"
   }
