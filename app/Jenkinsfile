@@ -1,0 +1,75 @@
+@Library('Shared') _
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE_NAME = 'marksog/some_sample_flask_app'
+        DOCKER_MIGRATION_IMAGE_NAME = 'marksog/some_sample_flask_app_migration'
+        DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
+        GITHUB_CREDENTIALS = credentials('github_credentials')
+        GIT_BRANCH = 'main'
+    }
+
+    stages {
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Clone Repository') {
+            steps {
+                script {
+                    git branch: "${GIT_BRANCH}",
+                        credentialsId: "${GITHUB_CREDENTIALS}",
+                        url: 'https://github.com/marksog/sample_flask_app.git'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dir('app') {
+                        docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}", '-f Dockerfile .')
+                    }
+                }
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                script {
+                    trivy_scan()
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker_push(
+                        image: env.DOCKER_IMAGE_NAME,
+                        tag: env.DOCKER_IMAGE_TAG,
+                        credentialsId: 'dockerhub_credentials'
+                    )
+                }
+            }
+        }
+
+        stage('Update Kubernetes Manifest') {
+            steps {
+                script {
+                    update_k8s_manifest(
+                        imageTag: env.DOCKER_IMAGE_TAG,
+                        manifestsPath: 'k8s/app',
+                        gitCredentialsId: 'github_credentials',
+                        gitUserName: 'Jenkins',
+                        gitUserEmail: 'meyofmarksog@gmail.com'
+                    )
+                }
+            }
+        }
+    }
+}
