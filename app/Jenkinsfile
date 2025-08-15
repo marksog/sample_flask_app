@@ -39,7 +39,8 @@ pipeline {
         stage('Security Scan') {
             steps {
                 script {
-                    trivy_scan()
+                    sh "trivy image --severity CRITICAL ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
+                    sh "trivy image --severity HIGH ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
                 }
             }
         }
