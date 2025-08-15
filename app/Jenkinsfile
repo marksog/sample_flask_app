@@ -48,14 +48,13 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker_push(
-                        image: env.DOCKER_IMAGE_NAME,
-                        tag: env.DOCKER_IMAGE_TAG,
-                        credentialsId: 'docker-credentials'
-                    )
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-credentials') {
+                        docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
+                    }
                 }
             }
         }
+
 
         stage('Update Kubernetes Manifest') {
             steps {
