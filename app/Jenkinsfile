@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'marksog/some_sample_flask_app'
         DOCKER_MIGRATION_IMAGE_NAME = 'marksog/some_sample_flask_app_migration'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
-        GITHUB_CREDENTIALS = credentials('github_credentials')
+        GITHUB_CREDENTIALS = credentials('git_credentials')
         GIT_BRANCH = 'main'
     }
 
@@ -50,7 +50,7 @@ pipeline {
                     docker_push(
                         image: env.DOCKER_IMAGE_NAME,
                         tag: env.DOCKER_IMAGE_TAG,
-                        credentialsId: 'dockerhub_credentials'
+                        credentialsId: 'docker-credentials'
                     )
                 }
             }
