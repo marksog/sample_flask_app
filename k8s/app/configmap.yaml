@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-app-config
+data:
+  prometheus_metrics_port: "5001"
+  prometheus_metrics_path: "/metrics"

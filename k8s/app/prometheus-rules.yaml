@@ -1,0 +1,28 @@
+apiVersion: monitoring.k8s.io/v1
+kind: PrometheusRule
+metadata:
+  name: flask-app-rules
+  labels:
+    app: flask-app
+    release: prometheus
+spec:
+  groups:
+  - name: flask-app.rules
+    rules:
+    - alert: HighRequestLatency
+      expr: histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le, instance, job)) > 1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High request latency on {{ $labels.instance }}"
+        description: "{{ $labels.instance }} has a 95th percentile request latency above 1s (current value: {{ $value }}s)"
+    
+    - alert: ErrorRateHigh
+      expr: sum(rate(flask_http_request_total{status_code=~"5.."}[5m])) by (instance, job) / sum(rate(flask_http_request_total[5m])) by (instance, job) > 0.05
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High error rate on {{ $labels.instance }}"
+        description: "{{ $labels.instance }} has error rate of {{ $value }}"
